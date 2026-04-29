@@ -1,5 +1,6 @@
 package br.insper.insperMind.docente;
 import br.insper.insperMind.disciplina.Disciplina;
+import br.insper.insperMind.docente.dto.SaveDocenteDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;

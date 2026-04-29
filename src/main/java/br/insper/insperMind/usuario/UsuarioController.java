@@ -1,5 +1,8 @@
 package br.insper.insperMind.usuario;
 
+import br.insper.insperMind.usuario.dto.EditUsuarioDTO;
+import br.insper.insperMind.usuario.dto.ResponseUsuarioDTO;
+import br.insper.insperMind.usuario.dto.SaveUsuarioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
