@@ -1,4 +1,4 @@
-package br.insper.insperMind.docente;
+package br.insper.insperMind.docente.dto;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -2,6 +2,7 @@ package br.insper.insperMind.usuario;
 
 import br.insper.insperMind.comentario.Comentario;
 import br.insper.insperMind.favorito.Favorito;
+import br.insper.insperMind.usuario.dto.SaveUsuarioDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;

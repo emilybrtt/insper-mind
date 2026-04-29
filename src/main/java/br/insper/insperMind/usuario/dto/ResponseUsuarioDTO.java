@@ -1,5 +1,6 @@
-package br.insper.insperMind.usuario;
+package br.insper.insperMind.usuario.dto;
 
+import br.insper.insperMind.usuario.Usuario;
 import lombok.Getter;
 import lombok.Setter;
 
