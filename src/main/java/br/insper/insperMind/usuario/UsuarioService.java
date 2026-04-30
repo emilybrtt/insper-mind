@@ -1,8 +1,10 @@
 package br.insper.insperMind.usuario;
 
+import br.insper.insperMind.usuario.Usuario;
 import br.insper.insperMind.usuario.dto.EditUsuarioDTO;
 import br.insper.insperMind.usuario.dto.ResponseUsuarioDTO;
 import br.insper.insperMind.usuario.dto.SaveUsuarioDTO;
+import br.insper.insperMind.usuario.exception.UsuarioNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +29,7 @@ public class UsuarioService {
 
     public Usuario findByEmail(String email) {
         return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new UsuarioNotFoundException("Usuário não encontrado"));
     }
 
     public ResponseUsuarioDTO getDto(String email) {
@@ -40,4 +42,13 @@ public class UsuarioService {
         if (dto.getSenha() != null) usuario.setSenha(dto.getSenha());
         return ResponseUsuarioDTO.toDTO(usuarioRepository.save(usuario));
     }
+
+    public void delete(Integer id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsuarioNotFoundException("Usuário não encontrado"));
+
+        usuario.setAtivo(false);
+        usuarioRepository.save(usuario);
+    }
+
 }
