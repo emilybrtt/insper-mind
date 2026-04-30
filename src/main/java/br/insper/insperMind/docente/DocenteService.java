@@ -39,6 +39,7 @@ public class DocenteService {
     public ResponseDocenteDTO update(String email, EditDocenteDTO dto) {
         Docente docente = findByEmail(email);
         if (dto.getNome() != null) docente.setNome(dto.getNome());
+        if (dto.getEmail() != null) docente.setEmail(dto.getEmail());
         return ResponseDocenteDTO.toDTO(docenteRepository.save(docente));
     }
 

@@ -14,5 +14,4 @@ public class ErrorDTO {
     private LocalDateTime data;
     private String path;
     private String codigoErro;
-
 }

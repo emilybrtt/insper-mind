@@ -8,5 +8,7 @@ import lombok.Setter;
 public class EditUsuarioDTO {
     private String nome;
     private String senha;
+    private String email;
+
 }
 

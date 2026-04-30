@@ -7,4 +7,6 @@ import lombok.Setter;
 @Setter
 public class EditDocenteDTO {
     private String nome;
+    private String email;
+
 }

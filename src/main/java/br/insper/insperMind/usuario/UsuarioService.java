@@ -40,6 +40,7 @@ public class UsuarioService {
         Usuario usuario = findByEmail(email);
         if (dto.getNome() != null) usuario.setNome(dto.getNome());
         if (dto.getSenha() != null) usuario.setSenha(dto.getSenha());
+        if (dto.getEmail() != null) usuario.setEmail(dto.getEmail());
         return ResponseUsuarioDTO.toDTO(usuarioRepository.save(usuario));
     }
 
