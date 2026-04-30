@@ -21,8 +21,7 @@ public class ResponseFavoritoDTO {
         ResponseFavoritoDTO dto = new ResponseFavoritoDTO();
 
         dto.setId(favorito.getId());
-        dto.setItemId(favorito.getItemId());
-        dto.setTipoItem(favorito.getTipoItem());
+        dto.setId(favorito.getMaterial() != null ? favorito.getMaterial().getId() : (favorito.getEletiva() != null ? favorito.getEletiva().getId() : null));
         dto.setDataSalvo(favorito.getDataSalvo());
 
         if (favorito.getUsuario() != null) {

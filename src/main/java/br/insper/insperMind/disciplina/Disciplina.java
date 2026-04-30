@@ -5,6 +5,8 @@ import br.insper.insperMind.docente.Docente;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,19 +20,25 @@ public class Disciplina {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String nome;
 
+    @UpdateTimestamp
     private LocalDateTime dataAtualizacao;
 
-    @OneToMany
+    @OneToMany(mappedBy = "disciplina")
     private List<Comentario> relatos;
 
     @ManyToOne
+    @JoinColumn(name = "id_docente")
     private Docente docente;
 
+    @Column(nullable = false)
     private String formulaAvaliacao;
 
+    @Column(nullable = false)
     private Boolean temDelta;
 
+    @Column(nullable = false)
     private String criterioBarreira;
 }

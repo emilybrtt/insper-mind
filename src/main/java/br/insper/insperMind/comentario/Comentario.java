@@ -21,11 +21,14 @@ public class Comentario {
     @Column(nullable = false)
     private String comentario;
 
+    @Column(nullable = false)
     private Integer curtidas = 0;
 
     @ManyToOne
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
+    @Column(nullable = false)
     private Boolean ativo = true;
 
     @CreationTimestamp
