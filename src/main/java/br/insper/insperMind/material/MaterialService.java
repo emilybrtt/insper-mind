@@ -5,6 +5,7 @@ import br.insper.insperMind.curso.CursoService;
 import br.insper.insperMind.material.dto.EditMaterialDTO;
 import br.insper.insperMind.material.dto.ResponseMaterialDTO;
 import br.insper.insperMind.material.dto.SaveMaterialDTO;
+import br.insper.insperMind.material.exception.MaterialNotFoundException;
 import br.insper.insperMind.usuario.Usuario;
 import br.insper.insperMind.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +55,14 @@ public class MaterialService {
         return ResponseMaterialDTO.toDTO(material);
     }
 
+    public Material findEntityById(Integer id) {
+        return materialRepository.findById(id)
+                .orElseThrow(() -> new MaterialNotFoundException("Material não encontrado"));
+    }
+
     public ResponseMaterialDTO edit(Integer id, EditMaterialDTO dto) {
         Material material = materialRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Material não encontrado"));
+                .orElseThrow(() -> new MaterialNotFoundException("Material não encontrado"));
 
         if (dto.getTitulo() != null) {
             material.setTitulo(dto.getTitulo());
@@ -90,7 +96,7 @@ public class MaterialService {
 
     public void delete(Integer id) {
         Material material = materialRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Material não encontrado"));
+                .orElseThrow(() -> new MaterialNotFoundException("Material não encontrado"));
 
         material.setAtivo(false);
         materialRepository.save(material);
