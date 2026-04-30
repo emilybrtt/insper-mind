@@ -1,0 +1,60 @@
+name: Deploy automatico
+
+on:
+  push:
+    branches: ["main"]
+
+env:
+  DOCKER_IMAGE: gabrielca5/insper-mind
+  CONTAINER_NAME: insper-mind
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: temurin
+          cache: maven
+
+      - name: Build com Maven
+        run: mvn -B package -DskipTests --file pom.xml
+
+      - name: Login no Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build e push da imagem
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+            ${{ env.DOCKER_IMAGE }}:latest
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            docker stop ${{ env.CONTAINER_NAME }} || true
+            docker rm ${{ env.CONTAINER_NAME }} || true
+            docker pull ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+            docker run -d \
+              -p 8080:8080 \
+              --name ${{ env.CONTAINER_NAME }} \
+              ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+            docker image prune -f
