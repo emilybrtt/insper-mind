@@ -1,4 +1,10 @@
 package br.insper.insperMind.curso;
 
-public interface CursoRepository {
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CursoRepository extends JpaRepository<Curso, Integer> {
+
+    Page<Curso> findByAtivoTrue(Pageable pageable);
 }

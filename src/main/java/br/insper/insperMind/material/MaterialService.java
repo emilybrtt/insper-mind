@@ -1,5 +1,7 @@
 package br.insper.insperMind.material;
 
+import br.insper.insperMind.curso.Curso;
+import br.insper.insperMind.curso.CursoService;
 import br.insper.insperMind.material.dto.ResponseMaterialDTO;
 import br.insper.insperMind.material.dto.SaveMaterialDTO;
 import br.insper.insperMind.usuario.Usuario;
@@ -18,8 +20,12 @@ public class MaterialService {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private CursoService cursoService;
+
     public ResponseMaterialDTO save(SaveMaterialDTO dto) {
         Usuario usuario = usuarioService.findByEmail(dto.getEmailUsuario());
+        Curso curso = cursoService.findModelById(dto.getCursoId());
 
         Material material = new Material();
         material.setTitulo(dto.getTitulo());
@@ -27,6 +33,7 @@ public class MaterialService {
         material.setLink(dto.getLink());
         material.setTipo(TipoMaterial.valueOf(dto.getTipo()));
         material.setUsuario(usuario);
+        material.setCurso(curso);
         material.setAtivo(true);
 
         material = materialRepository.save(material);

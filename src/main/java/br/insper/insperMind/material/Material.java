@@ -1,5 +1,6 @@
 package br.insper.insperMind.material;
 
+import br.insper.insperMind.curso.Curso;
 import br.insper.insperMind.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,6 +29,9 @@ public class Material {
 
     @ManyToOne
     private Usuario usuario;
+
+    @ManyToOne
+    private Curso curso;
 
     @CreationTimestamp
     private LocalDateTime dataCriacao;
