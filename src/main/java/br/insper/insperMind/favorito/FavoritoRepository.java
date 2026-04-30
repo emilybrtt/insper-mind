@@ -1,5 +1,7 @@
 package br.insper.insperMind.favorito;
 
+import br.insper.insperMind.eletiva.Eletiva;
+import br.insper.insperMind.material.Material;
 import br.insper.insperMind.usuario.Usuario;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,15 +11,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FavoritoRepository extends JpaRepository<Favorito, Integer> {
 
-    boolean existsByUsuarioAndMaterial_IdAndAtivoTrue(
-            Usuario usuario,
-            Integer materialId
-    );
+    boolean existsByUsuarioAndMaterialAndAtivoTrue(Usuario usuario, Material material);
 
-    boolean existsByUsuarioAndEletiva_IdAndAtivoTrue(
-            Usuario usuario,
-            Integer eletivaId
-    );
+    boolean existsByUsuarioAndEletivaAndAtivoTrue(Usuario usuario, Eletiva eletiva);
 
     Page<Favorito> findByAtivoTrue(Pageable pageable);
 }
