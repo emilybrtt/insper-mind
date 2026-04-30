@@ -1,6 +1,7 @@
 package br.insper.insperMind.comentario;
 
 import br.insper.insperMind.comentario.dto.SaveComentarioDTO;
+import br.insper.insperMind.disciplina.Disciplina;
 import br.insper.insperMind.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,6 +28,10 @@ public class Comentario {
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
+
+    @ManyToOne
+    @JoinColumn(name = "disciplina_id")
+    private Disciplina disciplina;
 
     @Column(nullable = false)
     private Boolean ativo = true;
