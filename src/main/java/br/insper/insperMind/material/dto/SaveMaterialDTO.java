@@ -12,4 +12,5 @@ public class SaveMaterialDTO {
     private String link;
     private String tipo;
     private String emailUsuario;
+    private Integer cursoId;
 }
