@@ -1,5 +1,6 @@
 package br.insper.insperMind.comentario;
 
+import br.insper.insperMind.comentario.dto.EditComentarioDTO;
 import br.insper.insperMind.comentario.dto.ResponseComentarioDTO;
 import br.insper.insperMind.comentario.dto.SaveComentarioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,12 @@ public class ComentarioController {
     @PostMapping
     public ResponseComentarioDTO saveComentario(@RequestBody SaveComentarioDTO dto) {
         return comentarioService.save(dto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseComentarioDTO editComentario(@PathVariable Integer id,
+                                                @RequestBody EditComentarioDTO dto) {
+        return comentarioService.edit(id, dto);
     }
 
     @PatchMapping("/{id}/curtir")

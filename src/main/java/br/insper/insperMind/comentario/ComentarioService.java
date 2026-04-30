@@ -1,5 +1,6 @@
 package br.insper.insperMind.comentario;
 
+import br.insper.insperMind.comentario.dto.EditComentarioDTO;
 import br.insper.insperMind.comentario.dto.ResponseComentarioDTO;
 import br.insper.insperMind.comentario.dto.SaveComentarioDTO;
 import br.insper.insperMind.comentario.exception.ComentarioNotFoundException;
@@ -33,9 +34,30 @@ public class ComentarioService {
                 .map(ResponseComentarioDTO::toDTO);
     }
 
+    public ResponseComentarioDTO edit(Integer id, EditComentarioDTO dto) {
+        Comentario comentario = comentarioRepository.findById(id)
+                .orElseThrow(() -> new ComentarioNotFoundException("Comentário não encontrado"));
+
+        if (dto.getComentario() != null) {
+            comentario.setComentario(dto.getComentario());
+        }
+
+        if (dto.getAtivo() != null) {
+            comentario.setAtivo(dto.getAtivo());
+        }
+
+        comentario = comentarioRepository.save(comentario);
+
+        return ResponseComentarioDTO.toDTO(comentario);
+    }
+
     public ResponseComentarioDTO curtir(Integer id) {
         Comentario comentario = comentarioRepository.findById(id)
                 .orElseThrow(() -> new ComentarioNotFoundException("Comentário não encontrado"));
+
+        if (comentario.getCurtidas() == null) {
+            comentario.setCurtidas(0);
+        }
 
         comentario.setCurtidas(comentario.getCurtidas() + 1);
         comentario = comentarioRepository.save(comentario);
