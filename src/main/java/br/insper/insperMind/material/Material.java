@@ -28,13 +28,16 @@ public class Material {
     private TipoMaterial tipo;
 
     @ManyToOne
+    @JoinColumn(name="id_usuario")
     private Usuario usuario;
 
     @ManyToOne
+    @JoinColumn(name="id_curso")
     private Curso curso;
 
     @CreationTimestamp
     private LocalDateTime dataCriacao;
 
+    @Column(nullable = false)
     private Boolean ativo = true;
 }

@@ -2,6 +2,7 @@ package br.insper.insperMind.favorito;
 
 import br.insper.insperMind.favorito.dto.ResponseFavoritoDTO;
 import br.insper.insperMind.favorito.dto.SaveFavoritoDTO;
+import br.insper.insperMind.favorito.exception.FavoritoNotFoundException;
 import br.insper.insperMind.usuario.Usuario;
 import br.insper.insperMind.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,7 @@ public class FavoritoService {
 
         Favorito favorito = new Favorito();
         favorito.setUsuario(usuario);
-        favorito.setItemId(dto.getItemId());
-        favorito.setTipoItem(dto.getTipoItem());
+        favorito.setId(dto.getItemId());
         favorito.setAtivo(true);
 
         favorito = favoritoRepository.save(favorito);
@@ -49,7 +49,7 @@ public class FavoritoService {
 
     public void delete(Integer id) {
         Favorito favorito = favoritoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Favorito não encontrado"));
+                .orElseThrow(() -> new FavoritoNotFoundException("Favorito não encontrado"));
 
         favorito.setAtivo(false);
         favoritoRepository.save(favorito);

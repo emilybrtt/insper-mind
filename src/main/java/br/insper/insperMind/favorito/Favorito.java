@@ -1,5 +1,7 @@
 package br.insper.insperMind.favorito;
 
+import br.insper.insperMind.eletiva.Eletiva;
+import br.insper.insperMind.material.Material;
 import br.insper.insperMind.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,12 +20,18 @@ public class Favorito {
     private Integer id;
 
     @ManyToOne
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
-    private Integer itemId;
+    @ManyToOne
+    @JoinColumn(name= "id_material")
+    private Material material;
 
-    private String tipoItem;
+    @ManyToOne
+    @JoinColumn(name="id_eletiva")
+    private Eletiva eletiva;
 
+    @Column(nullable = false)
     private Boolean ativo = true;
 
     @CreationTimestamp
