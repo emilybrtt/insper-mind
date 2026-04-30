@@ -1,5 +1,6 @@
 package br.insper.insperMind.curso;
 
+import br.insper.insperMind.curso.dto.EditCursoDTO;
 import br.insper.insperMind.curso.dto.ResponseCursoDTO;
 import br.insper.insperMind.curso.dto.SaveCursoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,11 @@ public class CursoController {
     @GetMapping("/{id}")
     public ResponseCursoDTO getCurso(@PathVariable Integer id) {
         return cursoService.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseCursoDTO editCurso(@PathVariable Integer id, @RequestBody EditCursoDTO dto) {
+        return cursoService.edit(id, dto);
     }
 
     @DeleteMapping("/{id}")

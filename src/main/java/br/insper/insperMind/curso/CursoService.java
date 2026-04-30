@@ -1,5 +1,6 @@
 package br.insper.insperMind.curso;
 
+import br.insper.insperMind.curso.dto.EditCursoDTO;
 import br.insper.insperMind.curso.dto.ResponseCursoDTO;
 import br.insper.insperMind.curso.dto.SaveCursoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,23 @@ public class CursoService {
     public Curso findModelById(Integer id) {
         return cursoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+    }
+
+    public ResponseCursoDTO edit(Integer id, EditCursoDTO dto) {
+        Curso curso = cursoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+
+        if (dto.getNome() != null) {
+            curso.setNome(dto.getNome());
+        }
+
+        if (dto.getAtivo() != null) {
+            curso.setAtivo(dto.getAtivo());
+        }
+
+        curso = cursoRepository.save(curso);
+
+        return ResponseCursoDTO.toDTO(curso);
     }
 
     public void delete(Integer id) {

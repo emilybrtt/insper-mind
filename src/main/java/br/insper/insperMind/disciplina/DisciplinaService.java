@@ -1,5 +1,6 @@
 package br.insper.insperMind.disciplina;
 
+import br.insper.insperMind.disciplina.dto.EditDisciplinaDTO;
 import br.insper.insperMind.disciplina.dto.ResponseDisciplinaDTO;
 import br.insper.insperMind.disciplina.dto.SaveDisciplinaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,33 @@ public class DisciplinaService {
     public ResponseDisciplinaDTO findById(Integer id) {
         Disciplina disciplina = disciplinaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
+
+        return ResponseDisciplinaDTO.toDTO(disciplina);
+    }
+
+    public ResponseDisciplinaDTO edit(Integer id, EditDisciplinaDTO dto) {
+        Disciplina disciplina = disciplinaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
+
+        if (dto.getNome() != null) {
+            disciplina.setNome(dto.getNome());
+        }
+
+        if (dto.getFormulaAvaliacao() != null) {
+            disciplina.setFormulaAvaliacao(dto.getFormulaAvaliacao());
+        }
+
+        if (dto.getTemDelta() != null) {
+            disciplina.setTemDelta(dto.getTemDelta());
+        }
+
+        if (dto.getCriterioBarreira() != null) {
+            disciplina.setCriterioBarreira(dto.getCriterioBarreira());
+        }
+
+        disciplina.setDataAtualizacao(LocalDateTime.now());
+
+        disciplina = disciplinaRepository.save(disciplina);
 
         return ResponseDisciplinaDTO.toDTO(disciplina);
     }
