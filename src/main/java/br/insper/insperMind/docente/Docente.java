@@ -27,7 +27,7 @@ public class Docente {
     private String email;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "disciplina")
+    @OneToMany(mappedBy = "docente")
     private List<Disciplina> disciplinas;
 
     @CreationTimestamp
