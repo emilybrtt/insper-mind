@@ -1,8 +1,10 @@
 package br.insper.insperMind.docente;
 
+import br.insper.insperMind.docente.Docente;
 import br.insper.insperMind.docente.dto.EditDocenteDTO;
 import br.insper.insperMind.docente.dto.ResponseDocenteDTO;
 import br.insper.insperMind.docente.dto.SaveDocenteDTO;
+import br.insper.insperMind.docente.exception.DocenteNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +29,7 @@ public class DocenteService {
 
     public Docente findByEmail(String email) {
         return docenteRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Docente não encontrado"));
+                .orElseThrow(() -> new DocenteNotFoundException("Docente não encontrado"));
     }
 
     public ResponseDocenteDTO getDto(String email) {
@@ -37,6 +39,16 @@ public class DocenteService {
     public ResponseDocenteDTO update(String email, EditDocenteDTO dto) {
         Docente docente = findByEmail(email);
         if (dto.getNome() != null) docente.setNome(dto.getNome());
+        if (dto.getEmail() != null) docente.setEmail(dto.getEmail());
         return ResponseDocenteDTO.toDTO(docenteRepository.save(docente));
     }
+
+    public void delete(Integer id) {
+        Docente docente = docenteRepository.findById(id)
+                .orElseThrow(() -> new DocenteNotFoundException("Docente não encontrado"));
+
+        docente.setAtivo(false);
+        docenteRepository.save(docente);
+    }
+
 }

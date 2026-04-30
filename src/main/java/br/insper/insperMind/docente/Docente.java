@@ -36,6 +36,8 @@ public class Docente {
     @UpdateTimestamp
     private LocalDateTime dataAtualizacao;
 
+    private Boolean ativo = true;
+
     public static Docente toModel(SaveDocenteDTO dto) {
         Docente docente = new Docente();
         docente.setNome(dto.getNome());

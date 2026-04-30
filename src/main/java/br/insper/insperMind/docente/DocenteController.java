@@ -34,4 +34,10 @@ public class DocenteController {
     public ResponseDocenteDTO updateDocente(@PathVariable String email, @RequestBody EditDocenteDTO dto) {
         return docenteService.update(email, dto);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteDocente(@PathVariable Integer id) {
+        docenteService.delete(id);
+    }
 }
+

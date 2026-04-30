@@ -44,6 +44,8 @@ public class Usuario {
     @UpdateTimestamp
     private LocalDateTime dataAtualizacao;
 
+    private Boolean ativo = true;
+
     public static Usuario toModel(SaveUsuarioDTO dto) {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.getNome());
