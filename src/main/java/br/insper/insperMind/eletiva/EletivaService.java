@@ -3,6 +3,7 @@ package br.insper.insperMind.eletiva;
 import br.insper.insperMind.eletiva.dto.EditEletivaDTO;
 import br.insper.insperMind.eletiva.dto.ResponseEletivaDTO;
 import br.insper.insperMind.eletiva.dto.SaveEletivaDTO;
+import br.insper.insperMind.eletiva.exception.EletivaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +32,7 @@ public class EletivaService {
 
     public Eletiva get(Integer id) {
         Eletiva eletiva = eletivaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new EletivaNotFoundException("Eletiva não encontrada"));
 
         if (!eletiva.getAtivo()) {
             throw new RuntimeException("Não encontrado");

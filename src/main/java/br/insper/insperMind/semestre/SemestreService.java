@@ -14,6 +14,21 @@ public class SemestreService {
     @Autowired
     private SemestreRepository semestreRepository;
 
+    public Semestre get(Integer id) {
+        Semestre semestre = semestreRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Semestre não encontrado"));
+
+        if (!semestre.getAtivo()) {
+            throw new RuntimeException("Semestre não encontrado");
+        }
+
+        return semestre;
+    }
+
+    public ResponseSemestreDTO getDTO(Integer id) {
+        return ResponseSemestreDTO.toDTO(get(id));
+    }
+
     public ResponseSemestreDTO save(SaveSemestreDTO dto) {
         Semestre semestre = new Semestre();
 
@@ -30,21 +45,9 @@ public class SemestreService {
                 .map(ResponseSemestreDTO::toDTO);
     }
 
-    public ResponseSemestreDTO findById(Integer id) {
-        Semestre semestre = semestreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Semestre não encontrado"));
-
-        return ResponseSemestreDTO.toDTO(semestre);
-    }
-
-    public Semestre findModelById(Integer id) {
-        return semestreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Semestre não encontrado"));
-    }
 
     public ResponseSemestreDTO edit(Integer id, EditSemestreDTO dto) {
-        Semestre semestre = semestreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Semestre não encontrado"));
+        Semestre semestre = get(id);
 
         if (dto.getNome() != null) {
             semestre.setNome(dto.getNome());
@@ -60,8 +63,7 @@ public class SemestreService {
     }
 
     public void delete(Integer id) {
-        Semestre semestre = semestreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Semestre não encontrado"));
+        Semestre semestre = get(id);
 
         semestre.setAtivo(false);
         semestreRepository.save(semestre);

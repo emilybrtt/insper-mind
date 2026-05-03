@@ -27,7 +27,7 @@ public class DisciplinaController {
 
     @GetMapping("/{id}")
     public ResponseDisciplinaDTO getDisciplina(@PathVariable Integer id) {
-        return disciplinaService.findById(id);
+        return disciplinaService.getDTO(id);
     }
 
     @PutMapping("/{id}")

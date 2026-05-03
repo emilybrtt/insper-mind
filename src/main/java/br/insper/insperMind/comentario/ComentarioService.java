@@ -20,6 +20,21 @@ public class ComentarioService {
     @Autowired
     private UsuarioService usuarioService;
 
+    public Comentario get(Integer id) {
+        Comentario comentario = comentarioRepository.findById(id)
+                .orElseThrow(() -> new ComentarioNotFoundException("Comentário não encontrado"));
+
+        if (!comentario.getAtivo()) {
+            throw new ComentarioNotFoundException("Comentário não encontrado");
+        }
+
+        return comentario;
+    }
+
+    public ResponseComentarioDTO getDTO(Integer id) {
+        return ResponseComentarioDTO.toDTO(get(id));
+    }
+
     public ResponseComentarioDTO save(SaveComentarioDTO dto) {
         Usuario usuario = usuarioService.findByEmail(dto.getEmailUsuario());
 
@@ -35,8 +50,7 @@ public class ComentarioService {
     }
 
     public ResponseComentarioDTO edit(Integer id, EditComentarioDTO dto) {
-        Comentario comentario = comentarioRepository.findById(id)
-                .orElseThrow(() -> new ComentarioNotFoundException("Comentário não encontrado"));
+        Comentario comentario = get(id);
 
         if (dto.getComentario() != null) {
             comentario.setComentario(dto.getComentario());
@@ -52,8 +66,7 @@ public class ComentarioService {
     }
 
     public ResponseComentarioDTO curtir(Integer id) {
-        Comentario comentario = comentarioRepository.findById(id)
-                .orElseThrow(() -> new ComentarioNotFoundException("Comentário não encontrado"));
+        Comentario comentario = get(id);
 
         if (comentario.getCurtidas() == null) {
             comentario.setCurtidas(0);
@@ -66,8 +79,7 @@ public class ComentarioService {
     }
 
     public void delete(Integer id) {
-        Comentario comentario = comentarioRepository.findById(id)
-                .orElseThrow(() -> new ComentarioNotFoundException("Comentário não encontrado"));
+        Comentario comentario = get(id);
 
         comentario.setAtivo(false);
         comentarioRepository.save(comentario);

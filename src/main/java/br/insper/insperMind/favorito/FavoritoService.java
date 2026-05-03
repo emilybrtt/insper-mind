@@ -32,6 +32,21 @@ public class FavoritoService {
     @Autowired
     private EletivaService eletivaService;
 
+    public Favorito get(Integer id) {
+        Favorito favorito = favoritoRepository.findById(id)
+                .orElseThrow(() -> new FavoritoNotFoundException("Favorito não encontrado"));
+
+        if (!favorito.getAtivo()) {
+            throw new FavoritoNotFoundException("Favorito não encontrado");
+        }
+
+        return favorito;
+    }
+
+    public ResponseFavoritoDTO getDTO(Integer id) {
+        return ResponseFavoritoDTO.toDTO(get(id));
+    }
+
     public ResponseFavoritoDTO save(SaveFavoritoDTO dto) {
         Usuario usuario = usuarioService.findByEmail(dto.getEmailUsuario());
 
@@ -49,7 +64,7 @@ public class FavoritoService {
 
         if (TIPO_MATERIAL.equalsIgnoreCase(tipo)) {
 
-            Material material = materialService.findEntityById(dto.getItemId());
+            Material material = materialService.get(dto.getItemId());
 
             boolean jaExiste = favoritoRepository
                     .existsByUsuarioAndMaterialAndAtivoTrue(usuario, material);
@@ -59,11 +74,11 @@ public class FavoritoService {
             }
 
             favorito.setMaterial(material);
-            favorito.setEletiva(null); // garantia explícita
+            favorito.setEletiva(null);
 
         } else {
 
-            Eletiva eletiva = eletivaService.findEntityById(dto.getItemId());
+            Eletiva eletiva = eletivaService.get(dto.getItemId());
 
             boolean jaExiste = favoritoRepository
                     .existsByUsuarioAndEletivaAndAtivoTrue(usuario, eletiva);
@@ -73,7 +88,7 @@ public class FavoritoService {
             }
 
             favorito.setEletiva(eletiva);
-            favorito.setMaterial(null); // garantia explícita
+            favorito.setMaterial(null);
         }
 
         return ResponseFavoritoDTO.toDTO(favoritoRepository.save(favorito));
@@ -85,8 +100,7 @@ public class FavoritoService {
     }
 
     public void delete(Integer id) {
-        Favorito favorito = favoritoRepository.findById(id)
-                .orElseThrow(() -> new FavoritoNotFoundException("Favorito não encontrado"));
+        Favorito favorito = get(id);
 
         favorito.setAtivo(false);
         favoritoRepository.save(favorito);
