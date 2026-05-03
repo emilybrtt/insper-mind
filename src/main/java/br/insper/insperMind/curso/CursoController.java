@@ -27,7 +27,7 @@ public class CursoController {
 
     @GetMapping("/{id}")
     public ResponseCursoDTO getCurso(@PathVariable Integer id) {
-        return cursoService.findById(id);
+        return cursoService.getDTO(id);
     }
 
     @PutMapping("/{id}")

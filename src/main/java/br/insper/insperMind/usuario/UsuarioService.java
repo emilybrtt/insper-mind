@@ -18,29 +18,52 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    public Usuario get(Integer id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsuarioNotFoundException("Usuário não encontrado"));
+
+        if (!usuario.getAtivo()) {
+            throw new UsuarioNotFoundException("Usuário não encontrado");
+        }
+
+        return usuario;
+    }
+
+    public ResponseUsuarioDTO getDTO(Integer id) {
+        return ResponseUsuarioDTO.toDTO(get(id));
+    }
+
+    public Usuario findByEmail(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new UsuarioNotFoundException("Usuário não encontrado"));
+
+        if (!usuario.getAtivo()) {
+            throw new UsuarioNotFoundException("Usuário não encontrado");
+        }
+
+        return usuario;
+    }
+
+    public ResponseUsuarioDTO getDto(String email) {
+        return ResponseUsuarioDTO.toDTO(findByEmail(email));
+    }
+
     public ResponseUsuarioDTO save(SaveUsuarioDTO dto) {
         Usuario usuario = Usuario.toModel(dto);
 
         String bcryptHashString = BCrypt.withDefaults().hashToString(12, dto.getSenha().toCharArray()); // Criptografa senha
         usuario.setSenha(bcryptHashString);
+        usuario.setAtivo(true);
 
         usuario = usuarioRepository.save(usuario);
         return ResponseUsuarioDTO.toDTO(usuario);
     }
 
     public Page<ResponseUsuarioDTO> list(Pageable pageable) {
-        return usuarioRepository.findAll(pageable)
+        return usuarioRepository.findByAtivoTrue(pageable)
                 .map(ResponseUsuarioDTO::toDTO);
     }
 
-    public Usuario findByEmail(String email) {
-        return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new UsuarioNotFoundException("Usuário não encontrado"));
-    }
-
-    public ResponseUsuarioDTO getDto(String email) {
-        return ResponseUsuarioDTO.toDTO(findByEmail(email));
-    }
 
     public ResponseUsuarioDTO update(String email, EditUsuarioDTO dto) {
         Usuario usuario = findByEmail(email);
@@ -60,8 +83,7 @@ public class UsuarioService {
     }
 
     public void delete(Integer id) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNotFoundException("Usuário não encontrado"));
+        Usuario usuario = get(id);
 
         usuario.setAtivo(false);
         usuarioRepository.save(usuario);

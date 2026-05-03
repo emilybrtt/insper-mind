@@ -27,7 +27,7 @@ public class MaterialController {
 
     @GetMapping("/{id}")
     public ResponseMaterialDTO getById(@PathVariable Integer id) {
-        return materialService.findById(id);
+        return materialService.getDTO(id);
     }
 
     @PutMapping("/{id}")

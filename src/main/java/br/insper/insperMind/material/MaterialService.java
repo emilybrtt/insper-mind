@@ -25,9 +25,24 @@ public class MaterialService {
     @Autowired
     private CursoService cursoService;
 
+    public Material get(Integer id) {
+        Material material = materialRepository.findById(id)
+                .orElseThrow(() -> new MaterialNotFoundException("Material não encontrado"));
+
+        if (!material.getAtivo()) {
+            throw new MaterialNotFoundException("Material não encontrado");
+        }
+
+        return material;
+    }
+
+    public ResponseMaterialDTO getDTO(Integer id) {
+        return ResponseMaterialDTO.toDTO(get(id));
+    }
+
     public ResponseMaterialDTO save(SaveMaterialDTO dto) {
         Usuario usuario = usuarioService.findByEmail(dto.getEmailUsuario());
-        Curso curso = cursoService.findModelById(dto.getCursoId());
+        Curso curso = cursoService.get(dto.getCursoId());
 
         Material material = new Material();
         material.setTitulo(dto.getTitulo());
@@ -48,21 +63,9 @@ public class MaterialService {
                 .map(ResponseMaterialDTO::toDTO);
     }
 
-    public ResponseMaterialDTO findById(Integer id) {
-        Material material = materialRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Material não encontrado"));
-
-        return ResponseMaterialDTO.toDTO(material);
-    }
-
-    public Material findEntityById(Integer id) {
-        return materialRepository.findById(id)
-                .orElseThrow(() -> new MaterialNotFoundException("Material não encontrado"));
-    }
 
     public ResponseMaterialDTO edit(Integer id, EditMaterialDTO dto) {
-        Material material = materialRepository.findById(id)
-                .orElseThrow(() -> new MaterialNotFoundException("Material não encontrado"));
+        Material material = get(id);
 
         if (dto.getTitulo() != null) {
             material.setTitulo(dto.getTitulo());
@@ -81,7 +84,7 @@ public class MaterialService {
         }
 
         if (dto.getCursoId() != null) {
-            Curso curso = cursoService.findModelById(dto.getCursoId());
+            Curso curso = cursoService.get(dto.getCursoId());
             material.setCurso(curso);
         }
 
@@ -95,8 +98,7 @@ public class MaterialService {
     }
 
     public void delete(Integer id) {
-        Material material = materialRepository.findById(id)
-                .orElseThrow(() -> new MaterialNotFoundException("Material não encontrado"));
+        Material material = get(id);
 
         material.setAtivo(false);
         materialRepository.save(material);

@@ -41,4 +41,7 @@ public class Disciplina {
 
     @Column(nullable = false)
     private String criterioBarreira;
+
+    @Column(nullable = false)
+    private Boolean ativo;
 }

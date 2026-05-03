@@ -3,6 +3,7 @@ package br.insper.insperMind.disciplina;
 import br.insper.insperMind.disciplina.dto.EditDisciplinaDTO;
 import br.insper.insperMind.disciplina.dto.ResponseDisciplinaDTO;
 import br.insper.insperMind.disciplina.dto.SaveDisciplinaDTO;
+import br.insper.insperMind.disciplina.exception.DisciplinaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,21 @@ public class DisciplinaService {
     @Autowired
     private DisciplinaRepository disciplinaRepository;
 
+    public Disciplina get(Integer id) {
+        Disciplina disciplina = disciplinaRepository.findById(id)
+                .orElseThrow(() -> new DisciplinaNotFoundException("Disciplina não encontrada"));
+        if (!disciplina.getAtivo()) {
+            throw new DisciplinaNotFoundException("Disciplina não encontrada");
+        }
+        return disciplina;
+    }
+
+
+    public ResponseDisciplinaDTO getDTO(Integer id) {
+        return ResponseDisciplinaDTO.toDTO(get(id));
+    }
+
+
     public ResponseDisciplinaDTO save(SaveDisciplinaDTO dto) {
         Disciplina disciplina = new Disciplina();
 
@@ -23,6 +39,7 @@ public class DisciplinaService {
         disciplina.setFormulaAvaliacao(dto.getFormulaAvaliacao());
         disciplina.setTemDelta(dto.getTemDelta());
         disciplina.setCriterioBarreira(dto.getCriterioBarreira());
+        disciplina.setAtivo(true);
         disciplina.setDataAtualizacao(LocalDateTime.now());
 
         disciplina = disciplinaRepository.save(disciplina);
@@ -30,21 +47,15 @@ public class DisciplinaService {
         return ResponseDisciplinaDTO.toDTO(disciplina);
     }
 
+
     public Page<ResponseDisciplinaDTO> list(Pageable pageable) {
-        return disciplinaRepository.findAll(pageable)
+        return disciplinaRepository.findByAtivoTrue(pageable)
                 .map(ResponseDisciplinaDTO::toDTO);
     }
 
-    public ResponseDisciplinaDTO findById(Integer id) {
-        Disciplina disciplina = disciplinaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
-
-        return ResponseDisciplinaDTO.toDTO(disciplina);
-    }
 
     public ResponseDisciplinaDTO edit(Integer id, EditDisciplinaDTO dto) {
-        Disciplina disciplina = disciplinaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
+        Disciplina disciplina = get(id);
 
         if (dto.getNome() != null) {
             disciplina.setNome(dto.getNome());
@@ -69,10 +80,10 @@ public class DisciplinaService {
         return ResponseDisciplinaDTO.toDTO(disciplina);
     }
 
-    public void delete(Integer id) {
-        Disciplina disciplina = disciplinaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada"));
 
-        disciplinaRepository.delete(disciplina);
+    public void delete(Integer id) {
+        Disciplina disciplina = get(id);
+        disciplina.setAtivo(false);
+        disciplinaRepository.save(disciplina);
     }
 }

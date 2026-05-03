@@ -14,6 +14,21 @@ public class CursoService {
     @Autowired
     private CursoRepository cursoRepository;
 
+    public Curso get(Integer id) {
+        Curso curso = cursoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+
+        if (!curso.getAtivo()) {
+            throw new RuntimeException("Curso não encontrado");
+        }
+
+        return curso;
+    }
+
+    public ResponseCursoDTO getDTO(Integer id) {
+        return ResponseCursoDTO.toDTO(get(id));
+    }
+
     public ResponseCursoDTO save(SaveCursoDTO dto) {
         Curso curso = new Curso();
         curso.setNome(dto.getNome());
@@ -29,21 +44,8 @@ public class CursoService {
                 .map(ResponseCursoDTO::toDTO);
     }
 
-    public ResponseCursoDTO findById(Integer id) {
-        Curso curso = cursoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
-
-        return ResponseCursoDTO.toDTO(curso);
-    }
-
-    public Curso findModelById(Integer id) {
-        return cursoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
-    }
-
     public ResponseCursoDTO edit(Integer id, EditCursoDTO dto) {
-        Curso curso = cursoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+        Curso curso = get(id);
 
         if (dto.getNome() != null) {
             curso.setNome(dto.getNome());
@@ -59,8 +61,7 @@ public class CursoService {
     }
 
     public void delete(Integer id) {
-        Curso curso = cursoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+        Curso curso = get(id);
 
         curso.setAtivo(false);
         cursoRepository.save(curso);

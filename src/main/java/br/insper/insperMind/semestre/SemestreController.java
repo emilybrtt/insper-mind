@@ -27,7 +27,7 @@ public class SemestreController {
 
     @GetMapping("/{id}")
     public ResponseSemestreDTO getById(@PathVariable Integer id) {
-        return semestreService.findById(id);
+        return semestreService.getDTO(id);
     }
 
     @PutMapping("/{id}")
