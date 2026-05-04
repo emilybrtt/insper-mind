@@ -41,12 +41,6 @@ public class EletivaService {
         return eletiva;
     }
 
-    public Eletiva findEntityById(Integer id) {
-        return eletivaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Eletiva não encontrada"));
-    }
-
-
     public ResponseEletivaDTO getDTO(Integer id) {
         return ResponseEletivaDTO.toDTO(get(id));
     }

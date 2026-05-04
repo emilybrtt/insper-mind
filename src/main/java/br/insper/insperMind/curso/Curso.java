@@ -1,6 +1,7 @@
 package br.insper.insperMind.curso;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ public class Curso {
     @Column(nullable = false)
     private String nome;
 
+    @NotNull
     @Column(nullable = false)
     private Boolean ativo = true;
 }

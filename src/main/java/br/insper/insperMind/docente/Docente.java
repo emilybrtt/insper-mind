@@ -3,6 +3,7 @@ import br.insper.insperMind.disciplina.Disciplina;
 import br.insper.insperMind.docente.dto.SaveDocenteDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -36,6 +37,8 @@ public class Docente {
     @UpdateTimestamp
     private LocalDateTime dataAtualizacao;
 
+    @NotNull
+    @Column(nullable = false)
     private Boolean ativo = true;
 
     public static Docente toModel(SaveDocenteDTO dto) {

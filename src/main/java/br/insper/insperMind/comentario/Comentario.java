@@ -30,7 +30,7 @@ public class Comentario {
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "disciplina_id")
+    @JoinColumn(name = "id_disciplina")
     private Disciplina disciplina;
 
     @Column(nullable = false)
