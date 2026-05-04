@@ -5,6 +5,7 @@ import br.insper.insperMind.favorito.Favorito;
 import br.insper.insperMind.usuario.dto.SaveUsuarioDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,6 +45,8 @@ public class Usuario {
     @UpdateTimestamp
     private LocalDateTime dataAtualizacao;
 
+    @NotNull
+    @Column(nullable = false)
     private Boolean ativo = true;
 
     public static Usuario toModel(SaveUsuarioDTO dto) {

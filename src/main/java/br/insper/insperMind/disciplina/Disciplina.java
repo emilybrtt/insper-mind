@@ -3,6 +3,7 @@ package br.insper.insperMind.disciplina;
 import br.insper.insperMind.comentario.Comentario;
 import br.insper.insperMind.docente.Docente;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -42,6 +43,7 @@ public class Disciplina {
     @Column(nullable = false)
     private String criterioBarreira;
 
+    @NotNull
     @Column(nullable = false)
     private Boolean ativo;
 }

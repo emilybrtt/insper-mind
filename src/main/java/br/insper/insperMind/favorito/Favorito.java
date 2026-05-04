@@ -4,6 +4,7 @@ import br.insper.insperMind.eletiva.Eletiva;
 import br.insper.insperMind.material.Material;
 import br.insper.insperMind.usuario.Usuario;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,6 +32,7 @@ public class Favorito {
     @JoinColumn(name="id_eletiva")
     private Eletiva eletiva;
 
+    @NotNull
     @Column(nullable = false)
     private Boolean ativo = true;
 
