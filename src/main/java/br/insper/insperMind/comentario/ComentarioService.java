@@ -22,10 +22,10 @@ public class ComentarioService {
 
     public Comentario get(Integer id) {
         Comentario comentario = comentarioRepository.findById(id)
-                .orElseThrow(() -> new ComentarioNotFoundException("Comentário não encontrado"));
+                .orElseThrow(() -> new ComentarioNotFoundException());
 
         if (!comentario.getAtivo()) {
-            throw new ComentarioNotFoundException("Comentário não encontrado");
+            throw new ComentarioNotFoundException();
         }
 
         return comentario;
