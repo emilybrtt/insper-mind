@@ -70,12 +70,12 @@ public class FavoritoService {
 
             Material material = materialService.get(dto.getItemId());
 
-            boolean jaExiste = favoritoRepository
-                    .existsByUsuarioAndMaterialAndAtivoTrue(usuario, material);
-
-            if (jaExiste) {
-                throw new MaterialAlreadyFavoritedException();
-            }
+//            boolean jaExiste = favoritoRepository
+//                    .existsByUsuarioAndMaterialAndAtivoTrue(usuario, material);
+//
+//            if (jaExiste) {
+//                throw new MaterialAlreadyFavoritedException();
+//            }
 
             favorito.setMaterial(material);
             favorito.setEletiva(null);
