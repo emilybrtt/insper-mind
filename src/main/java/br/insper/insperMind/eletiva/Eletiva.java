@@ -9,9 +9,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-@Setter
+// Eletiva.java
 @Getter
+@Setter
 @Entity
+@DiscriminatorValue("Eletiva")
 public class Eletiva extends Disciplina {
 
     @Column(nullable = false)
