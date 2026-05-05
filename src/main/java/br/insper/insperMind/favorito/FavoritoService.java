@@ -98,13 +98,19 @@ public class FavoritoService {
         return ResponseFavoritoDTO.toDTO(favoritoRepository.save(favorito));
     }
 
-    public Page<ResponseFavoritoDTO> list(Pageable pageable) {
-        return favoritoRepository.findByAtivoTrue(pageable)
+    public Page<ResponseFavoritoDTO> list(String emailUsuario, Pageable pageable) {
+        Usuario usuario = usuarioService.findByEmail(emailUsuario);
+
+        return favoritoRepository.findByUsuarioAndAtivoTrue(usuario, pageable)
                 .map(ResponseFavoritoDTO::toDTO);
     }
 
-    public void delete(Integer id) {
+    public void delete(Integer id, String emailUsuario) {
         Favorito favorito = get(id);
+
+        if (!favorito.getUsuario().getEmail().equals(emailUsuario)) {
+            throw new RuntimeException("Você não tem permissão para deletar este favorito");
+        }
 
         favorito.setAtivo(false);
         favoritoRepository.save(favorito);
