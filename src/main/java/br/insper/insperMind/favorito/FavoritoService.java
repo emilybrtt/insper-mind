@@ -4,9 +4,13 @@ import br.insper.insperMind.eletiva.Eletiva;
 import br.insper.insperMind.eletiva.EletivaService;
 import br.insper.insperMind.favorito.dto.ResponseFavoritoDTO;
 import br.insper.insperMind.favorito.dto.SaveFavoritoDTO;
+import br.insper.insperMind.favorito.exception.EletivaAlreadyFavoritedException;
 import br.insper.insperMind.favorito.exception.FavoritoNotFoundException;
+import br.insper.insperMind.favorito.exception.InvalidItemTypeException;
+import br.insper.insperMind.favorito.exception.MaterialAlreadyFavoritedException;
 import br.insper.insperMind.material.Material;
 import br.insper.insperMind.material.MaterialService;
+import br.insper.insperMind.material.exception.MaterialAlreadyExistsException;
 import br.insper.insperMind.usuario.Usuario;
 import br.insper.insperMind.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +59,7 @@ public class FavoritoService {
         // validação básica
         if (!TIPO_MATERIAL.equalsIgnoreCase(tipo) &&
                 !TIPO_ELETIVA.equalsIgnoreCase(tipo)) {
-            throw new RuntimeException("Tipo de item inválido");
+            throw new InvalidItemTypeException("Tipo de item inválido");
         }
 
         Favorito favorito = new Favorito();
@@ -70,7 +74,7 @@ public class FavoritoService {
                     .existsByUsuarioAndMaterialAndAtivoTrue(usuario, material);
 
             if (jaExiste) {
-                throw new RuntimeException("Material já favoritado");
+                throw new MaterialAlreadyFavoritedException("Material já favoritado");
             }
 
             favorito.setMaterial(material);
@@ -84,7 +88,7 @@ public class FavoritoService {
                     .existsByUsuarioAndEletivaAndAtivoTrue(usuario, eletiva);
 
             if (jaExiste) {
-                throw new RuntimeException("Eletiva já favoritada");
+                throw new EletivaAlreadyFavoritedException("Eletiva já favoritada");
             }
 
             favorito.setEletiva(eletiva);
