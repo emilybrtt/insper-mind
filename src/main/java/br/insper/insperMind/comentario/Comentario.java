@@ -39,11 +39,12 @@ public class Comentario {
     @CreationTimestamp
     private LocalDateTime dataCriacao;
 
-    public static Comentario toModel(SaveComentarioDTO dto, Usuario usuario) {
+    public static Comentario toModel(SaveComentarioDTO dto, Usuario usuario, Disciplina disciplina) {
         Comentario comentario = new Comentario();
         comentario.setComentario(dto.getComentario());
         comentario.setCurtidas(0);
         comentario.setUsuario(usuario);
+        comentario.setDisciplina(disciplina);
         comentario.setAtivo(true);
         return comentario;
     }

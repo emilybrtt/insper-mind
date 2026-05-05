@@ -6,6 +6,7 @@ import br.insper.insperMind.semestre.dto.EditSemestreDTO;
 import br.insper.insperMind.semestre.dto.ResponseSemestreDTO;
 import br.insper.insperMind.semestre.dto.SaveSemestreDTO;
 import br.insper.insperMind.semestre.exception.SemestreAlreadyExistsException;
+import br.insper.insperMind.semestre.exception.SemestreNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,10 +23,10 @@ public class SemestreService {
 
     public Semestre get(Integer id) {
         Semestre semestre = semestreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new SemestreNotFoundException());
 
         if (!semestre.getAtivo()) {
-            throw new RuntimeException();
+            throw new SemestreNotFoundException();
         }
 
         return semestre;

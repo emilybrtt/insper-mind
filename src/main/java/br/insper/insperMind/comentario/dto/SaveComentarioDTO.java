@@ -8,4 +8,5 @@ import lombok.Setter;
 public class SaveComentarioDTO {
     private String comentario;
     private String emailUsuario;
+    private Integer idDisciplina;
 }

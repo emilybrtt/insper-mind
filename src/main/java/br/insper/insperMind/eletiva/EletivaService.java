@@ -10,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
 public class EletivaService {
 
@@ -51,9 +49,14 @@ public class EletivaService {
 
     public ResponseEletivaDTO edit(Integer id, EditEletivaDTO editEletivaDTO) {
         Eletiva eletivaDB = get(id);
+        if (editEletivaDTO.getCargaHoraria() != null) {
+            eletivaDB.setCargaHoraria(editEletivaDTO.getCargaHoraria());
+        }
 
-        eletivaDB.setCargaHoraria(editEletivaDTO.getCargaHoraria());
-        eletivaDB.setSemestreMinimo(editEletivaDTO.getSemestreMinimo());
+        if(editEletivaDTO.getSemestreMinimo() != null) {
+            eletivaDB.setSemestreMinimo(editEletivaDTO.getSemestreMinimo());
+        }
+
         eletivaDB.setSemestre(null);
 
         eletivaDB = eletivaRepository.save(eletivaDB);
