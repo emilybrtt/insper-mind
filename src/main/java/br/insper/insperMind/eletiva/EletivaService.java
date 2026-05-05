@@ -3,6 +3,7 @@ package br.insper.insperMind.eletiva;
 import br.insper.insperMind.eletiva.dto.EditEletivaDTO;
 import br.insper.insperMind.eletiva.dto.ResponseEletivaDTO;
 import br.insper.insperMind.eletiva.dto.SaveEletivaDTO;
+import br.insper.insperMind.eletiva.exception.EletivaAlreadyExistsException;
 import br.insper.insperMind.eletiva.exception.EletivaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,9 @@ public class EletivaService {
     private EletivaRepository eletivaRepository;
 
     public ResponseEletivaDTO save(SaveEletivaDTO saveEletivaDTO) {
+        if (eletivaRepository.existsByNome(saveEletivaDTO.getNome())) {
+            throw new EletivaAlreadyExistsException("Eletiva já cadastrada");
+        }
         Eletiva eletiva = Eletiva.toModel(saveEletivaDTO);
         eletiva = eletivaRepository.save(eletiva);
 
@@ -35,7 +39,7 @@ public class EletivaService {
                 .orElseThrow(() -> new EletivaNotFoundException("Eletiva não encontrada"));
 
         if (!eletiva.getAtivo()) {
-            throw new RuntimeException("Não encontrado");
+            throw new EletivaNotFoundException("Não encontrada");
         }
 
         return eletiva;

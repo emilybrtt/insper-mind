@@ -3,6 +3,7 @@ package br.insper.insperMind.disciplina;
 import br.insper.insperMind.disciplina.dto.EditDisciplinaDTO;
 import br.insper.insperMind.disciplina.dto.ResponseDisciplinaDTO;
 import br.insper.insperMind.disciplina.dto.SaveDisciplinaDTO;
+import br.insper.insperMind.disciplina.exception.DisciplinaAlreadyExistsException;
 import br.insper.insperMind.disciplina.exception.DisciplinaNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,9 @@ public class DisciplinaService {
 
 
     public ResponseDisciplinaDTO save(SaveDisciplinaDTO dto) {
+        if (disciplinaRepository.existsByNome(dto.getNome())) {
+            throw new DisciplinaAlreadyExistsException("Disciplina já existe");
+        }
         Disciplina disciplina = new Disciplina();
 
         disciplina.setNome(dto.getNome());

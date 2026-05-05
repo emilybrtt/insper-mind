@@ -11,6 +11,6 @@ import org.springframework.data.domain.Page;
 @Repository
 public interface DocenteRepository extends JpaRepository<Docente, Integer> {
     Optional<Docente> findByEmail(String email);
-
+    boolean existsByNome(String nome);
     Page<Docente> findByAtivoTrue(Pageable pageable);
 }

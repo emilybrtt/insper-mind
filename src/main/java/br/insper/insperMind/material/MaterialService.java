@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 @Service
 public class MaterialService {
 
@@ -26,14 +25,9 @@ public class MaterialService {
     private CursoService cursoService;
 
     public Material get(Integer id) {
-        Material material = materialRepository.findById(id)
+        return materialRepository.findById(id)
+                .filter(Material::getAtivo)
                 .orElseThrow(() -> new MaterialNotFoundException("Material não encontrado"));
-
-        if (!material.getAtivo()) {
-            throw new MaterialNotFoundException("Material não encontrado");
-        }
-
-        return material;
     }
 
     public ResponseMaterialDTO getDTO(Integer id) {
@@ -44,18 +38,12 @@ public class MaterialService {
         Usuario usuario = usuarioService.findByEmail(dto.getEmailUsuario());
         Curso curso = cursoService.get(dto.getCursoId());
 
-        Material material = new Material();
-        material.setTitulo(dto.getTitulo());
-        material.setDescricao(dto.getDescricao());
-        material.setLink(dto.getLink());
-        material.setTipo(TipoMaterial.valueOf(dto.getTipo()));
-        material.setUsuario(usuario);
-        material.setCurso(curso);
-        material.setAtivo(true);
+        if (materialRepository.existsByTitulo(dto.getTitulo())) {
+            throw new MaterialNotFoundException("Material já cadastrado");
+        }
+        Material material = Material.toModel(dto, usuario, curso);
 
-        material = materialRepository.save(material);
-
-        return ResponseMaterialDTO.toDTO(material);
+        return ResponseMaterialDTO.toDTO(materialRepository.save(material));
     }
 
     public Page<ResponseMaterialDTO> list(Pageable pageable) {
@@ -63,43 +51,17 @@ public class MaterialService {
                 .map(ResponseMaterialDTO::toDTO);
     }
 
-
     public ResponseMaterialDTO edit(Integer id, EditMaterialDTO dto) {
         Material material = get(id);
 
-        if (dto.getTitulo() != null) {
-            material.setTitulo(dto.getTitulo());
-        }
+        Curso curso = (dto.getCursoId() != null) ? cursoService.get(dto.getCursoId()) : null;
+        material.update(dto, curso);
 
-        if (dto.getDescricao() != null) {
-            material.setDescricao(dto.getDescricao());
-        }
-
-        if (dto.getLink() != null) {
-            material.setLink(dto.getLink());
-        }
-
-        if (dto.getTipo() != null) {
-            material.setTipo(TipoMaterial.valueOf(dto.getTipo()));
-        }
-
-        if (dto.getCursoId() != null) {
-            Curso curso = cursoService.get(dto.getCursoId());
-            material.setCurso(curso);
-        }
-
-        if (dto.getAtivo() != null) {
-            material.setAtivo(dto.getAtivo());
-        }
-
-        material = materialRepository.save(material);
-
-        return ResponseMaterialDTO.toDTO(material);
+        return ResponseMaterialDTO.toDTO(materialRepository.save(material));
     }
 
     public void delete(Integer id) {
         Material material = get(id);
-
         material.setAtivo(false);
         materialRepository.save(material);
     }
