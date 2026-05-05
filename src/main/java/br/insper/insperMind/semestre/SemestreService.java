@@ -1,5 +1,7 @@
 package br.insper.insperMind.semestre;
 
+import br.insper.insperMind.curso.Curso;
+import br.insper.insperMind.curso.CursoService;
 import br.insper.insperMind.semestre.dto.EditSemestreDTO;
 import br.insper.insperMind.semestre.dto.ResponseSemestreDTO;
 import br.insper.insperMind.semestre.dto.SaveSemestreDTO;
@@ -14,6 +16,9 @@ public class SemestreService {
 
     @Autowired
     private SemestreRepository semestreRepository;
+
+    @Autowired
+    private CursoService cursoService;
 
     public Semestre get(Integer id) {
         Semestre semestre = semestreRepository.findById(id)
@@ -31,13 +36,16 @@ public class SemestreService {
     }
 
     public ResponseSemestreDTO save(SaveSemestreDTO dto) {
-        if (semestreRepository.existsByNome(dto.getNome())) {
+        Curso curso = cursoService.get(dto.getCursoId());
+
+        if (semestreRepository.existsByNomeAndCursoId(dto.getNome(), curso.getId())) {
             throw new SemestreAlreadyExistsException();
         }
 
         Semestre semestre = new Semestre();
 
         semestre.setNome(dto.getNome());
+        semestre.setCurso(curso);
         semestre.setAtivo(true);
 
         semestre = semestreRepository.save(semestre);
@@ -56,6 +64,11 @@ public class SemestreService {
 
         if (dto.getNome() != null) {
             semestre.setNome(dto.getNome());
+        }
+
+        if (dto.getCursoId() != null) {
+            Curso curso = cursoService.get(dto.getCursoId());
+            semestre.setCurso(curso);
         }
 
         if (dto.getAtivo() != null) {
