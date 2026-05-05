@@ -32,11 +32,14 @@ public class Eletiva extends Disciplina {
         Eletiva eletiva = new Eletiva();
         eletiva.setCargaHoraria(saveEletivaDTO.getCargaHoraria());
         eletiva.setSemestreMinimo(saveEletivaDTO.getSemestreMinimo());
-        if (saveEletivaDTO.getAtivo() != null) {
-            eletiva.setAtivo(saveEletivaDTO.getAtivo());
-        }
+        eletiva.setAtivo(saveEletivaDTO.getAtivo() != null ? saveEletivaDTO.getAtivo() : true);
+
+        eletiva.setNome(saveEletivaDTO.getSemestreMinimo());
+        eletiva.setFormulaAvaliacao("-");
+        eletiva.setCriterioBarreira("-");
+        eletiva.setTemDelta(false);
 
         return eletiva;
     }
+    }
 
-}
