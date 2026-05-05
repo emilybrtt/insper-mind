@@ -20,9 +20,9 @@ public class DisciplinaService {
 
     public Disciplina get(Integer id) {
         Disciplina disciplina = disciplinaRepository.findById(id)
-                .orElseThrow(() -> new DisciplinaNotFoundException("Disciplina não encontrada"));
+                .orElseThrow(() -> new DisciplinaNotFoundException());
         if (!disciplina.getAtivo()) {
-            throw new DisciplinaNotFoundException("Disciplina não encontrada");
+            throw new DisciplinaNotFoundException();
         }
         return disciplina;
     }
@@ -35,7 +35,7 @@ public class DisciplinaService {
 
     public ResponseDisciplinaDTO save(SaveDisciplinaDTO dto) {
         if (disciplinaRepository.existsByNome(dto.getNome())) {
-            throw new DisciplinaAlreadyExistsException("Disciplina já existe");
+            throw new DisciplinaAlreadyExistsException();
         }
         Disciplina disciplina = new Disciplina();
 
