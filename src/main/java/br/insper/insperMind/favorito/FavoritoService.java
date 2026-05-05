@@ -59,7 +59,7 @@ public class FavoritoService {
         // validação básica
         if (!TIPO_MATERIAL.equalsIgnoreCase(tipo) &&
                 !TIPO_ELETIVA.equalsIgnoreCase(tipo)) {
-            throw new InvalidItemTypeException("Tipo de item inválido");
+            throw new InvalidItemTypeException();
         }
 
         Favorito favorito = new Favorito();
@@ -74,7 +74,7 @@ public class FavoritoService {
                     .existsByUsuarioAndMaterialAndAtivoTrue(usuario, material);
 
             if (jaExiste) {
-                throw new MaterialAlreadyFavoritedException("Material já favoritado");
+                throw new MaterialAlreadyFavoritedException();
             }
 
             favorito.setMaterial(material);
@@ -88,7 +88,7 @@ public class FavoritoService {
                     .existsByUsuarioAndEletivaAndAtivoTrue(usuario, eletiva);
 
             if (jaExiste) {
-                throw new EletivaAlreadyFavoritedException("Eletiva já favoritada");
+                throw new EletivaAlreadyFavoritedException();
             }
 
             favorito.setEletiva(eletiva);
