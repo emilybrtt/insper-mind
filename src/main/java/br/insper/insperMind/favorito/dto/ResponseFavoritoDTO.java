@@ -26,9 +26,7 @@ public class ResponseFavoritoDTO {
         if (favorito.getMaterial() != null) {
             dto.setItemId(favorito.getMaterial().getId());
             dto.setTipoItem("MATERIAL");
-        }
-
-        if (favorito.getEletiva() != null) {
+         }else if (favorito.getEletiva() != null) {
             dto.setItemId(favorito.getEletiva().getId());
             dto.setTipoItem("ELETIVA");
         }
