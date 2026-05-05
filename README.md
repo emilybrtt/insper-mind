@@ -45,7 +45,7 @@ O backend modela os principais conceitos do sistema por meio das seguintes class
 - `Disciplina`: representa uma disciplina de um semestre, sua formula de avaliacao, criterio de barreira e relacao com docente e comentarios.
 - `Eletiva`: especializacao de `Disciplina`, com carga horaria e semestre minimo, sem ficar presa a um curso especifico.
 - `Docente`: representa professores vinculados a disciplinas.
-- `Material`: representa materiais academicos compartilhados por usuarios.
+- `Material`: representa materiais academicos compartilhados por usuarios e associados a uma disciplina.
 - `TipoMaterial`: enum que classifica materiais como prova antiga, resumo, lista, PDF, livro e outros tipos.
 - `Comentario`: representa relatos/comentarios feitos por usuarios.
 - `Favorito`: representa itens salvos por usuarios, como materiais ou eletivas.
@@ -91,6 +91,7 @@ Cada modulo segue uma organizacao em camadas:
 - `Semestre` agora recebe `cursoId` nos DTOs de criacao e edicao, reforcando o vinculo com `Curso`.
 - `Disciplina` agora recebe `semestreId` nos DTOs de criacao e edicao, reforcando o vinculo com `Semestre`.
 - `Eletiva` continua sendo uma especializacao de `Disciplina`, mas nao fica vinculada a semestre regular; ao editar, o semestre e mantido como `null`.
+- `Material` usa `disciplinaId` para ser associado diretamente a uma disciplina.
 - A edicao de `Material` exige `emailUsuario` no corpo da requisicao e valida se o email pertence ao criador do material.
 - A remocao logica de `Material` exige o header `emailUsuario` e tambem valida se o usuario e o criador.
 - A resposta de `Favorito` agora preserva o `id` do favorito e retorna o item salvo separadamente em `itemId`, com `tipoItem` definido como `MATERIAL` ou `ELETIVA`.
@@ -126,6 +127,7 @@ http://3.237.223.11:8080/swagger-ui/index.html
 
 - `POST /semestre` e `PUT /semestre/{id}` usam `cursoId` para associar o semestre a um curso.
 - `POST /disciplina` e `PUT /disciplina/{id}` usam `semestreId` para associar a disciplina a um semestre.
+- `POST /material` e `PUT /material/{id}` usam `disciplinaId` para associar o material a uma disciplina.
 - `PUT /material/{id}` usa `emailUsuario` no corpo para autorizar a edicao pelo criador.
 - `DELETE /material/{id}` usa o header `emailUsuario` para autorizar a remocao logica pelo criador.
 - `POST /favorito` usa `emailUsuario`, `itemId` e `tipoItem`; `tipoItem` deve indicar se o item salvo e `MATERIAL` ou `ELETIVA`.
@@ -241,6 +243,6 @@ Isso permite que o Hibernate atualize o schema conforme as entidades da aplicaca
 - Persistencia com PostgreSQL e Spring Data JPA.
 - Separacao em camadas: controllers, services, repositories, DTOs e entidades.
 - Modelagem com 10 tipos principais de dominio.
-- Uso de composicao em relacionamentos como curso-semestres, semestre-disciplinas, usuario-comentarios, usuario-favoritos, docente-disciplinas, curso-materiais e favoritos associados a materiais/eletivas.
+- Uso de composicao em relacionamentos como curso-semestres, semestre-disciplinas, disciplina-materiais, usuario-comentarios, usuario-favoritos, docente-disciplinas e favoritos associados a materiais/eletivas.
 - Uso de heranca em `Eletiva`, que estende `Disciplina`.
 - Frontend em React integrado ao backend publicado.

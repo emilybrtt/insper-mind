@@ -2,6 +2,7 @@ package br.insper.insperMind.disciplina;
 
 import br.insper.insperMind.comentario.Comentario;
 import br.insper.insperMind.docente.Docente;
+import br.insper.insperMind.material.Material;
 import br.insper.insperMind.semestre.Semestre;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -32,6 +33,9 @@ public class Disciplina {
 
     @OneToMany(mappedBy = "disciplina")
     private List<Comentario> relatos;
+
+    @OneToMany(mappedBy = "disciplina")
+    private List<Material> materiais;
 
     @ManyToOne
     @JoinColumn(name = "id_docente")

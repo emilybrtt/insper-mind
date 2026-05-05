@@ -1,6 +1,6 @@
 package br.insper.insperMind.material;
 
-import br.insper.insperMind.curso.Curso;
+import br.insper.insperMind.disciplina.Disciplina;
 import br.insper.insperMind.material.dto.EditMaterialDTO;
 import br.insper.insperMind.material.dto.SaveMaterialDTO;
 import br.insper.insperMind.usuario.Usuario;
@@ -38,8 +38,8 @@ public class Material {
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name="id_curso")
-    private Curso curso;
+    @JoinColumn(name="id_disciplina")
+    private Disciplina disciplina;
 
     @CreationTimestamp
     private LocalDateTime dataCriacao;
@@ -48,24 +48,24 @@ public class Material {
     @Column(nullable = false)
     private Boolean ativo = true;
 
-    public static Material toModel(SaveMaterialDTO dto, Usuario usuario, Curso curso) {
+    public static Material toModel(SaveMaterialDTO dto, Usuario usuario, Disciplina disciplina) {
         Material material = new Material();
         material.setTitulo(dto.getTitulo());
         material.setDescricao(dto.getDescricao());
         material.setLink(dto.getLink());
         material.setTipo(TipoMaterial.valueOf(dto.getTipo()));
         material.setUsuario(usuario);
-        material.setCurso(curso);
+        material.setDisciplina(disciplina);
         material.setAtivo(true);
         return material;
     }
 
-    public void update(EditMaterialDTO dto, Curso curso) {
+    public void update(EditMaterialDTO dto, Disciplina disciplina) {
         if (dto.getTitulo() != null) this.titulo = dto.getTitulo();
         if (dto.getDescricao() != null) this.descricao = dto.getDescricao();
         if (dto.getLink() != null) this.link = dto.getLink();
         if (dto.getTipo() != null) this.tipo = TipoMaterial.valueOf(dto.getTipo());
         if (dto.getAtivo() != null) this.ativo = dto.getAtivo();
-        if (curso != null) this.curso = curso;
+        if (disciplina != null) this.disciplina = disciplina;
     }
 }

@@ -11,6 +11,6 @@ public class EditMaterialDTO {
     private String descricao;
     private String link;
     private String tipo;
-    private Integer cursoId;
+    private Integer disciplinaId;
     private Boolean ativo;
 }

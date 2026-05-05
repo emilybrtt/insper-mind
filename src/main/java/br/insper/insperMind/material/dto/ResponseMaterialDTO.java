@@ -17,8 +17,8 @@ public class ResponseMaterialDTO {
     private String tipo;
     private String nomeUsuario;
     private String emailUsuario;
-    private Integer cursoId;
-    private String nomeCurso;
+    private Integer disciplinaId;
+    private String nomeDisciplina;
     private LocalDateTime dataCriacao;
 
     public static ResponseMaterialDTO toDTO(Material material) {
@@ -38,9 +38,9 @@ public class ResponseMaterialDTO {
             dto.setEmailUsuario(material.getUsuario().getEmail());
         }
 
-        if (material.getCurso() != null) {
-            dto.setCursoId(material.getCurso().getId());
-            dto.setNomeCurso(material.getCurso().getNome());
+        if (material.getDisciplina() != null) {
+            dto.setDisciplinaId(material.getDisciplina().getId());
+            dto.setNomeDisciplina(material.getDisciplina().getNome());
         }
 
         dto.setDataCriacao(material.getDataCriacao());

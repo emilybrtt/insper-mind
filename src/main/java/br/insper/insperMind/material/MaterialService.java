@@ -1,7 +1,7 @@
 package br.insper.insperMind.material;
 
-import br.insper.insperMind.curso.Curso;
-import br.insper.insperMind.curso.CursoService;
+import br.insper.insperMind.disciplina.Disciplina;
+import br.insper.insperMind.disciplina.DisciplinaService;
 import br.insper.insperMind.material.dto.EditMaterialDTO;
 import br.insper.insperMind.material.dto.ResponseMaterialDTO;
 import br.insper.insperMind.material.dto.SaveMaterialDTO;
@@ -22,7 +22,7 @@ public class MaterialService {
     private UsuarioService usuarioService;
 
     @Autowired
-    private CursoService cursoService;
+    private DisciplinaService disciplinaService;
 
     public Material get(Integer id) {
         return materialRepository.findById(id)
@@ -36,12 +36,12 @@ public class MaterialService {
 
     public ResponseMaterialDTO save(SaveMaterialDTO dto) {
         Usuario usuario = usuarioService.findByEmail(dto.getEmailUsuario());
-        Curso curso = cursoService.get(dto.getCursoId());
+        Disciplina disciplina = disciplinaService.get(dto.getDisciplinaId());
 
         if (materialRepository.existsByTitulo(dto.getTitulo())) {
             throw new MaterialNotFoundException();
         }
-        Material material = Material.toModel(dto, usuario, curso);
+        Material material = Material.toModel(dto, usuario, disciplina);
 
         return ResponseMaterialDTO.toDTO(materialRepository.save(material));
     }
@@ -58,8 +58,8 @@ public class MaterialService {
             throw new RuntimeException("Apenas o criador do material pode editá-lo!");
         }
 
-        Curso curso = (dto.getCursoId() != null) ? cursoService.get(dto.getCursoId()) : null;
-        material.update(dto, curso);
+        Disciplina disciplina = (dto.getDisciplinaId() != null) ? disciplinaService.get(dto.getDisciplinaId()) : null;
+        material.update(dto, disciplina);
 
         return ResponseMaterialDTO.toDTO(materialRepository.save(material));
     }
