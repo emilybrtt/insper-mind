@@ -15,8 +15,8 @@ public class FavoritoController {
     private FavoritoService favoritoService;
 
     @GetMapping
-    public Page<ResponseFavoritoDTO> listFavoritos(Pageable pageable) {
-        return favoritoService.list(pageable);
+    public Page<ResponseFavoritoDTO> listFavoritos(@RequestParam String emailUsuario, Pageable pageable) {
+        return favoritoService.list(emailUsuario, pageable);
     }
 
     @PostMapping
@@ -25,7 +25,7 @@ public class FavoritoController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFavorito(@PathVariable Integer id) {
-        favoritoService.delete(id);
+    public void deleteFavorito(@PathVariable Integer id, @RequestParam String emailUsuario) {
+        favoritoService.delete(id, emailUsuario);
     }
 }
