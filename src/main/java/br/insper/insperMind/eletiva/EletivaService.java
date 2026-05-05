@@ -51,9 +51,14 @@ public class EletivaService {
 
     public ResponseEletivaDTO edit(Integer id, EditEletivaDTO editEletivaDTO) {
         Eletiva eletivaDB = get(id);
+        if (editEletivaDTO.getCargaHoraria() != null) {
+            eletivaDB.setCargaHoraria(editEletivaDTO.getCargaHoraria());
+        }
 
-        eletivaDB.setCargaHoraria(editEletivaDTO.getCargaHoraria());
-        eletivaDB.setSemestreMinimo(editEletivaDTO.getSemestreMinimo());
+        if(editEletivaDTO.getSemestreMinimo() != null) {
+            eletivaDB.setSemestreMinimo(editEletivaDTO.getSemestreMinimo());
+        }
+
         eletivaDB.setSemestre(null);
 
         eletivaDB = eletivaRepository.save(eletivaDB);

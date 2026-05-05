@@ -5,6 +5,7 @@ import br.insper.insperMind.curso.CursoService;
 import br.insper.insperMind.material.dto.EditMaterialDTO;
 import br.insper.insperMind.material.dto.ResponseMaterialDTO;
 import br.insper.insperMind.material.dto.SaveMaterialDTO;
+import br.insper.insperMind.material.exception.MaterialAlreadyExistsException;
 import br.insper.insperMind.material.exception.MaterialNotFoundException;
 import br.insper.insperMind.usuario.Usuario;
 import br.insper.insperMind.usuario.UsuarioService;
@@ -39,7 +40,7 @@ public class MaterialService {
         Curso curso = cursoService.get(dto.getCursoId());
 
         if (materialRepository.existsByTitulo(dto.getTitulo())) {
-            throw new MaterialNotFoundException();
+            throw new MaterialAlreadyExistsException();
         }
         Material material = Material.toModel(dto, usuario, curso);
 
