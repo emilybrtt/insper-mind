@@ -4,6 +4,8 @@ import br.insper.insperMind.comentario.dto.EditComentarioDTO;
 import br.insper.insperMind.comentario.dto.ResponseComentarioDTO;
 import br.insper.insperMind.comentario.dto.SaveComentarioDTO;
 import br.insper.insperMind.comentario.exception.ComentarioNotFoundException;
+import br.insper.insperMind.disciplina.Disciplina;
+import br.insper.insperMind.disciplina.DisciplinaService;
 import br.insper.insperMind.usuario.Usuario;
 import br.insper.insperMind.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,10 @@ public class ComentarioService {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private DisciplinaService disciplinaService; // Ensure this exists
+
 
     public Comentario get(Integer id) {
         Comentario comentario = comentarioRepository.findById(id)
@@ -38,11 +44,16 @@ public class ComentarioService {
     public ResponseComentarioDTO save(SaveComentarioDTO dto) {
         Usuario usuario = usuarioService.findByEmail(dto.getEmailUsuario());
 
-        Comentario comentario = Comentario.toModel(dto, usuario);
+        Disciplina disciplina = disciplinaService.get(dto.getIdDisciplina());
+
+        Comentario comentario = Comentario.toModel(dto, usuario, disciplina);
+
         comentario = comentarioRepository.save(comentario);
 
         return ResponseComentarioDTO.toDTO(comentario);
     }
+
+
 
     public Page<ResponseComentarioDTO> list(Pageable pageable) {
         return comentarioRepository.findByAtivoTrue(pageable)
