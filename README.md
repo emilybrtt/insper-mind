@@ -82,8 +82,18 @@ Cada modulo segue uma organizacao em camadas:
 - Criacao e edicao de comentarios.
 - Curtidas em comentarios.
 - Favoritos para materiais e eletivas.
+- Edicao e delecao de materiais restritas ao usuario criador.
 - Listagens paginadas via `Pageable`.
 - Documentacao interativa da API via Swagger.
+
+## Atualizacoes recentes
+
+- `Semestre` agora recebe `cursoId` nos DTOs de criacao e edicao, reforcando o vinculo com `Curso`.
+- `Disciplina` agora recebe `semestreId` nos DTOs de criacao e edicao, reforcando o vinculo com `Semestre`.
+- `Eletiva` continua sendo uma especializacao de `Disciplina`, mas nao fica vinculada a semestre regular; ao editar, o semestre e mantido como `null`.
+- A edicao de `Material` exige `emailUsuario` no corpo da requisicao e valida se o email pertence ao criador do material.
+- A remocao logica de `Material` exige o header `emailUsuario` e tambem valida se o usuario e o criador.
+- A resposta de `Favorito` agora preserva o `id` do favorito e retorna o item salvo separadamente em `itemId`, com `tipoItem` definido como `MATERIAL` ou `ELETIVA`.
 
 ## Endpoints principais
 
@@ -111,6 +121,14 @@ Para ver metodos HTTP, payloads, parametros e respostas, acesse:
 ```text
 http://3.237.223.11:8080/swagger-ui/index.html
 ```
+
+### Observacoes sobre payloads
+
+- `POST /semestre` e `PUT /semestre/{id}` usam `cursoId` para associar o semestre a um curso.
+- `POST /disciplina` e `PUT /disciplina/{id}` usam `semestreId` para associar a disciplina a um semestre.
+- `PUT /material/{id}` usa `emailUsuario` no corpo para autorizar a edicao pelo criador.
+- `DELETE /material/{id}` usa o header `emailUsuario` para autorizar a remocao logica pelo criador.
+- `POST /favorito` usa `emailUsuario`, `itemId` e `tipoItem`; `tipoItem` deve indicar se o item salvo e `MATERIAL` ou `ELETIVA`.
 
 ## Como rodar localmente
 
