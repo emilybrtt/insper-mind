@@ -8,5 +8,6 @@ import lombok.Setter;
 public class SaveSemestreDTO {
 
     private String nome;
+    private Integer cursoId;
 
 }

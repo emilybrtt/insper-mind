@@ -40,10 +40,10 @@ O projeto foi desenvolvido para consolidar conceitos de arquitetura de software 
 O backend modela os principais conceitos do sistema por meio das seguintes classes e tipos de dominio:
 
 - `Usuario`: representa um usuario da plataforma, com cadastro, login, senha criptografada, comentarios e favoritos.
-- `Curso`: representa um curso disponivel no sistema.
-- `Semestre`: representa a organizacao academica por semestre.
-- `Disciplina`: representa uma disciplina, sua formula de avaliacao, criterio de barreira e relacao com docente e comentarios.
-- `Eletiva`: especializacao de `Disciplina`, com carga horaria e semestre minimo.
+- `Curso`: representa um curso disponivel no sistema e agrupa seus semestres.
+- `Semestre`: representa a organizacao academica por semestre dentro de um curso.
+- `Disciplina`: representa uma disciplina de um semestre, sua formula de avaliacao, criterio de barreira e relacao com docente e comentarios.
+- `Eletiva`: especializacao de `Disciplina`, com carga horaria e semestre minimo, sem ficar presa a um curso especifico.
 - `Docente`: representa professores vinculados a disciplinas.
 - `Material`: representa materiais academicos compartilhados por usuarios.
 - `TipoMaterial`: enum que classifica materiais como prova antiga, resumo, lista, PDF, livro e outros tipos.
@@ -223,6 +223,6 @@ Isso permite que o Hibernate atualize o schema conforme as entidades da aplicaca
 - Persistencia com PostgreSQL e Spring Data JPA.
 - Separacao em camadas: controllers, services, repositories, DTOs e entidades.
 - Modelagem com 10 tipos principais de dominio.
-- Uso de composicao em relacionamentos como usuario-comentarios, usuario-favoritos, docente-disciplinas, curso-materiais e favoritos associados a materiais/eletivas.
+- Uso de composicao em relacionamentos como curso-semestres, semestre-disciplinas, usuario-comentarios, usuario-favoritos, docente-disciplinas, curso-materiais e favoritos associados a materiais/eletivas.
 - Uso de heranca em `Eletiva`, que estende `Disciplina`.
 - Frontend em React integrado ao backend publicado.

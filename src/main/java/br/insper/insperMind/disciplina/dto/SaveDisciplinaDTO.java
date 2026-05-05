@@ -10,4 +10,5 @@ public class SaveDisciplinaDTO {
     private String formulaAvaliacao;
     private Boolean temDelta;
     private String criterioBarreira;
+    private Integer semestreId;
 }

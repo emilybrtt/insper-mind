@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class EditSemestreDTO {
     private String nome;
+    private Integer cursoId;
     private Boolean ativo;
 }

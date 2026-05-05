@@ -16,6 +16,10 @@ public class ResponseDisciplinaDTO {
     private String formulaAvaliacao;
     private Boolean temDelta;
     private String criterioBarreira;
+    private Integer semestreId;
+    private String nomeSemestre;
+    private Integer cursoId;
+    private String nomeCurso;
 
     public static ResponseDisciplinaDTO toDTO(Disciplina disciplina) {
         ResponseDisciplinaDTO dto = new ResponseDisciplinaDTO();
@@ -26,6 +30,14 @@ public class ResponseDisciplinaDTO {
         dto.setFormulaAvaliacao(disciplina.getFormulaAvaliacao());
         dto.setTemDelta(disciplina.getTemDelta());
         dto.setCriterioBarreira(disciplina.getCriterioBarreira());
+        if (disciplina.getSemestre() != null) {
+            dto.setSemestreId(disciplina.getSemestre().getId());
+            dto.setNomeSemestre(disciplina.getSemestre().getNome());
+            if (disciplina.getSemestre().getCurso() != null) {
+                dto.setCursoId(disciplina.getSemestre().getCurso().getId());
+                dto.setNomeCurso(disciplina.getSemestre().getCurso().getNome());
+            }
+        }
 
         return dto;
     }

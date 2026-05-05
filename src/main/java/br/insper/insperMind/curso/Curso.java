@@ -1,9 +1,12 @@
 package br.insper.insperMind.curso;
 
+import br.insper.insperMind.semestre.Semestre;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,4 +23,7 @@ public class Curso {
     @NotNull
     @Column(nullable = false)
     private Boolean ativo = true;
+
+    @OneToMany(mappedBy = "curso")
+    private List<Semestre> semestres;
 }

@@ -2,6 +2,7 @@ package br.insper.insperMind.disciplina;
 
 import br.insper.insperMind.comentario.Comentario;
 import br.insper.insperMind.docente.Docente;
+import br.insper.insperMind.semestre.Semestre;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -35,6 +36,10 @@ public class Disciplina {
     @ManyToOne
     @JoinColumn(name = "id_docente")
     private Docente docente;
+
+    @ManyToOne
+    @JoinColumn(name = "id_semestre")
+    private Semestre semestre;
 
     @Column(nullable = false)
     private String formulaAvaliacao;

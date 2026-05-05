@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResponseEletivaDTO {
+    private Integer id;
     private Integer cargaHoraria;
     private String semestreMinimo;
     private Boolean ativo;
@@ -17,9 +18,14 @@ public class ResponseEletivaDTO {
 
     public static @org.jspecify.annotations.NonNull ResponseEletivaDTO toDTO(Eletiva eletiva) {
         ResponseEletivaDTO responseEletivaDTO = new ResponseEletivaDTO();
+        responseEletivaDTO.setId(eletiva.getId());
         responseEletivaDTO.setCargaHoraria(eletiva.getCargaHoraria());
         responseEletivaDTO.setSemestreMinimo(eletiva.getSemestreMinimo());
         responseEletivaDTO.setAtivo(eletiva.getAtivo());
+        responseEletivaDTO.setNome(eletiva.getNome());
+        responseEletivaDTO.setFormulaAvaliacao(eletiva.getFormulaAvaliacao());
+        responseEletivaDTO.setTemDelta(eletiva.getTemDelta());
+        responseEletivaDTO.setCriterioBarreira(eletiva.getCriterioBarreira());
 
         return responseEletivaDTO;
     }
