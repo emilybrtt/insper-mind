@@ -33,4 +33,58 @@ public class FavoritoErrorHandling {
 
     }
 
+    @ExceptionHandler(MaterialAlreadyFavoritedException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ErrorDTO handleMaterialAlreadyFavoritedException(MaterialAlreadyFavoritedException ex,
+                                                            HttpServletRequest request) {
+
+        log.error("Material já favoritado");
+
+        ErrorDTO errorDTO =  new ErrorDTO();
+        errorDTO.setMensagem("Material já favoritado");
+        errorDTO.setData(LocalDateTime.now());
+        errorDTO.setCodigoHttp(HttpStatus.CONFLICT.value());
+        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setPath(request.getRequestURI());
+        return  errorDTO;
+
+    }
+
+    @ExceptionHandler(EletivaAlreadyFavoritedException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ErrorDTO handleEletivaAlreadyFavoritedException(EletivaAlreadyFavoritedException ex,
+                                                            HttpServletRequest request) {
+
+        log.error("Eletiva já favoritado");
+
+        ErrorDTO errorDTO =  new ErrorDTO();
+        errorDTO.setMensagem("Eletiva já favoritada");
+        errorDTO.setData(LocalDateTime.now());
+        errorDTO.setCodigoHttp(HttpStatus.CONFLICT.value());
+        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setPath(request.getRequestURI());
+        return  errorDTO;
+
+    }
+
+    @ExceptionHandler(InvalidItemTypeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorDTO handleInvalidItemTypeException(InvalidItemTypeException ex,
+                                                            HttpServletRequest request) {
+
+        log.error("Esse item não existe");
+
+        ErrorDTO errorDTO =  new ErrorDTO();
+        errorDTO.setMensagem("Esse item não existe");
+        errorDTO.setData(LocalDateTime.now());
+        errorDTO.setCodigoHttp(HttpStatus.BAD_REQUEST.value());
+        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setPath(request.getRequestURI());
+        return  errorDTO;
+
+    }
+
 }
