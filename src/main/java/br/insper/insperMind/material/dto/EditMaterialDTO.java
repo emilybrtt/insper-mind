@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EditMaterialDTO {
+    private String emailUsuario;
     private String titulo;
     private String descricao;
     private String link;
