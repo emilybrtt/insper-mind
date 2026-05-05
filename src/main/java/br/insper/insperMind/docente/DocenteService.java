@@ -4,6 +4,7 @@ import br.insper.insperMind.docente.Docente;
 import br.insper.insperMind.docente.dto.EditDocenteDTO;
 import br.insper.insperMind.docente.dto.ResponseDocenteDTO;
 import br.insper.insperMind.docente.dto.SaveDocenteDTO;
+import br.insper.insperMind.docente.exception.DocenteAlreadyExistsException;
 import br.insper.insperMind.docente.exception.DocenteNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,6 +47,10 @@ public class DocenteService {
     }
 
     public ResponseDocenteDTO save(SaveDocenteDTO dto) {
+        if (docenteRepository.existsByNome(dto.getNome())) {
+            throw new DocenteAlreadyExistsException("Docente já cadastrado");
+        }
+
         Docente docente = Docente.toModel(dto);
         docente.setAtivo(true);
 

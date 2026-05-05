@@ -5,6 +5,7 @@ import br.insper.insperMind.usuario.dto.EditUsuarioDTO;
 import br.insper.insperMind.usuario.dto.LoginUsuarioDTO;
 import br.insper.insperMind.usuario.dto.ResponseUsuarioDTO;
 import br.insper.insperMind.usuario.dto.SaveUsuarioDTO;
+import br.insper.insperMind.usuario.exception.UsuarioAlreadyExistsException;
 import br.insper.insperMind.usuario.exception.UsuarioNotFoundException;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,10 @@ public class UsuarioService {
     }
 
     public ResponseUsuarioDTO save(SaveUsuarioDTO dto) {
+        if (usuarioRepository.existsByEmail(dto.getEmail())) {
+            throw new UsuarioAlreadyExistsException("Usuário já cadastrado");
+        }
+
         Usuario usuario = Usuario.toModel(dto);
 
         String bcryptHashString = BCrypt.withDefaults().hashToString(12, dto.getSenha().toCharArray()); // Criptografa senha

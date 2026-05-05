@@ -3,6 +3,7 @@ package br.insper.insperMind.semestre;
 import br.insper.insperMind.semestre.dto.EditSemestreDTO;
 import br.insper.insperMind.semestre.dto.ResponseSemestreDTO;
 import br.insper.insperMind.semestre.dto.SaveSemestreDTO;
+import br.insper.insperMind.semestre.exception.SemestreAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,10 @@ public class SemestreService {
     }
 
     public ResponseSemestreDTO save(SaveSemestreDTO dto) {
+        if (semestreRepository.existsByNome(dto.getNome())) {
+            throw new SemestreAlreadyExistsException("Semestre já cadastrado");
+        }
+
         Semestre semestre = new Semestre();
 
         semestre.setNome(dto.getNome());

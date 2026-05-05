@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SemestreRepository extends JpaRepository<Semestre, Integer> {
-
+    boolean existsByNome(String nome);
     Page<Semestre> findByAtivoTrue(Pageable pageable);
 
 }

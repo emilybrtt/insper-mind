@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EletivaRepository extends JpaRepository<Eletiva, Integer> {
+    boolean existsByNome(String nome);
     Page<Eletiva> findByAtivoTrue(Pageable pageable);
 }

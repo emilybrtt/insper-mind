@@ -5,6 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CursoRepository extends JpaRepository<Curso, Integer> {
-
+    boolean existsByNome(String nome);
     Page<Curso> findByAtivoTrue(Pageable pageable);
 }

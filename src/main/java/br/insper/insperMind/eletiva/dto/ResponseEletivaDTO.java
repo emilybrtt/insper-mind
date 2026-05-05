@@ -10,6 +10,10 @@ public class ResponseEletivaDTO {
     private Integer cargaHoraria;
     private String semestreMinimo;
     private Boolean ativo;
+    private String nome;
+    private String formulaAvaliacao;
+    private Boolean temDelta;
+    private String criterioBarreira;
 
     public static @org.jspecify.annotations.NonNull ResponseEletivaDTO toDTO(Eletiva eletiva) {
         ResponseEletivaDTO responseEletivaDTO = new ResponseEletivaDTO();

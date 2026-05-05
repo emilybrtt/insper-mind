@@ -3,6 +3,8 @@ package br.insper.insperMind.curso;
 import br.insper.insperMind.curso.dto.EditCursoDTO;
 import br.insper.insperMind.curso.dto.ResponseCursoDTO;
 import br.insper.insperMind.curso.dto.SaveCursoDTO;
+import br.insper.insperMind.curso.exception.CursoAlreadyExistsException;
+import br.insper.insperMind.curso.exception.CursoNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +18,10 @@ public class CursoService {
 
     public Curso get(Integer id) {
         Curso curso = cursoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+                .orElseThrow(() -> new CursoNotFoundException("Curso não encontrado"));
 
         if (!curso.getAtivo()) {
-            throw new RuntimeException("Curso não encontrado");
+            throw new CursoNotFoundException("Curso não encontrado");
         }
 
         return curso;
@@ -30,6 +32,10 @@ public class CursoService {
     }
 
     public ResponseCursoDTO save(SaveCursoDTO dto) {
+        if (cursoRepository.existsByNome(dto.getNome())) {
+            throw new CursoAlreadyExistsException("Curso já existe");
+        }
+
         Curso curso = new Curso();
         curso.setNome(dto.getNome());
         curso.setAtivo(true);

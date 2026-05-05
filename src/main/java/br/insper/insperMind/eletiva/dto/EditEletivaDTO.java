@@ -8,4 +8,8 @@ import lombok.Setter;
 public class EditEletivaDTO {
     private Integer cargaHoraria;
     private String semestreMinimo;
+    private String nome;
+    private String formulaAvaliacao;
+    private Boolean temDelta;
+    private String criterioBarreira;
 }
