@@ -21,10 +21,10 @@ public class UsuarioService {
 
     public Usuario get(Integer id) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new UsuarioNotFoundException());
 
         if (!usuario.getAtivo()) {
-            throw new UsuarioNotFoundException("Usuário não encontrado");
+            throw new UsuarioNotFoundException();
         }
 
         return usuario;
@@ -36,10 +36,10 @@ public class UsuarioService {
 
     public Usuario findByEmail(String email) {
         Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new UsuarioNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new UsuarioNotFoundException());
 
         if (!usuario.getAtivo()) {
-            throw new UsuarioNotFoundException("Usuário não encontrado");
+            throw new UsuarioNotFoundException();
         }
 
         return usuario;
@@ -51,7 +51,7 @@ public class UsuarioService {
 
     public ResponseUsuarioDTO save(SaveUsuarioDTO dto) {
         if (usuarioRepository.existsByEmail(dto.getEmail())) {
-            throw new UsuarioAlreadyExistsException("Usuário já cadastrado");
+            throw new UsuarioAlreadyExistsException();
         }
 
         Usuario usuario = Usuario.toModel(dto);

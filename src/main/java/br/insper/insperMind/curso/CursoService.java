@@ -18,10 +18,10 @@ public class CursoService {
 
     public Curso get(Integer id) {
         Curso curso = cursoRepository.findById(id)
-                .orElseThrow(() -> new CursoNotFoundException("Curso não encontrado"));
+                .orElseThrow(() -> new CursoNotFoundException());
 
         if (!curso.getAtivo()) {
-            throw new CursoNotFoundException("Curso não encontrado");
+            throw new CursoNotFoundException();
         }
 
         return curso;
@@ -33,7 +33,7 @@ public class CursoService {
 
     public ResponseCursoDTO save(SaveCursoDTO dto) {
         if (cursoRepository.existsByNome(dto.getNome())) {
-            throw new CursoAlreadyExistsException("Curso já existe");
+            throw new CursoAlreadyExistsException();
         }
 
         Curso curso = new Curso();

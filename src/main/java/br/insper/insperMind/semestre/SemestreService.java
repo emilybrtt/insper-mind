@@ -17,10 +17,10 @@ public class SemestreService {
 
     public Semestre get(Integer id) {
         Semestre semestre = semestreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Semestre não encontrado"));
+                .orElseThrow(() -> new RuntimeException());
 
         if (!semestre.getAtivo()) {
-            throw new RuntimeException("Semestre não encontrado");
+            throw new RuntimeException();
         }
 
         return semestre;
@@ -32,7 +32,7 @@ public class SemestreService {
 
     public ResponseSemestreDTO save(SaveSemestreDTO dto) {
         if (semestreRepository.existsByNome(dto.getNome())) {
-            throw new SemestreAlreadyExistsException("Semestre já cadastrado");
+            throw new SemestreAlreadyExistsException();
         }
 
         Semestre semestre = new Semestre();
