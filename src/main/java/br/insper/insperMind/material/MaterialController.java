@@ -36,7 +36,7 @@ public class MaterialController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
-        materialService.delete(id);
+    public void delete(@PathVariable Integer id, @RequestHeader String emailUsuario) {
+        materialService.delete(id, emailUsuario);
     }
 }

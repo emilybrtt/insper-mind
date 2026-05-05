@@ -54,14 +54,23 @@ public class MaterialService {
     public ResponseMaterialDTO edit(Integer id, EditMaterialDTO dto) {
         Material material = get(id);
 
+        if (!material.getUsuario().getEmail().equals(dto.getEmailUsuario())) {
+            throw new RuntimeException("Apenas o criador do material pode editá-lo!");
+        }
+
         Curso curso = (dto.getCursoId() != null) ? cursoService.get(dto.getCursoId()) : null;
         material.update(dto, curso);
 
         return ResponseMaterialDTO.toDTO(materialRepository.save(material));
     }
 
-    public void delete(Integer id) {
+    public void delete(Integer id, String emailUsuario) {
         Material material = get(id);
+
+        if (!material.getUsuario().getEmail().equals(emailUsuario)) {
+            throw new RuntimeException("Apenas o criador do material pode deletá-lo!");
+        }
+
         material.setAtivo(false);
         materialRepository.save(material);
     }
