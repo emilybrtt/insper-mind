@@ -41,7 +41,6 @@ jobs:
           tags: |
             ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
             ${{ env.DOCKER_IMAGE }}:latest
-
       - name: Deploy via SSH
         uses: appleboy/ssh-action@master
         with:
@@ -55,7 +54,7 @@ jobs:
             docker pull ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
             docker run -d \
               -p 8080:8080 \
-              -e AIVEN_USERNAME=${{ secrets.AIVEN_USERNAME }} \
-              -e AIVEN_PASSWORD=${{ secrets.AIVEN_PASSWORD }} \
+              -e POSTGRES_USERNAME=${{ secrets.AIVEN_USERNAME }} \
+              -e POSTGRES_PASSWORD=${{ secrets.AIVEN_PASSWORD }} \
               --name ${{ env.CONTAINER_NAME }} \
               ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
