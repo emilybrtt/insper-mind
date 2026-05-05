@@ -20,7 +20,7 @@ public class EletivaService {
 
     public ResponseEletivaDTO save(SaveEletivaDTO saveEletivaDTO) {
         if (eletivaRepository.existsByNome(saveEletivaDTO.getNome())) {
-            throw new EletivaAlreadyExistsException("Eletiva já cadastrada");
+            throw new EletivaAlreadyExistsException();
         }
         Eletiva eletiva = Eletiva.toModel(saveEletivaDTO);
         eletiva = eletivaRepository.save(eletiva);
@@ -36,10 +36,10 @@ public class EletivaService {
 
     public Eletiva get(Integer id) {
         Eletiva eletiva = eletivaRepository.findById(id)
-                .orElseThrow(() -> new EletivaNotFoundException("Eletiva não encontrada"));
+                .orElseThrow(() -> new EletivaNotFoundException());
 
         if (!eletiva.getAtivo()) {
-            throw new EletivaNotFoundException("Não encontrada");
+            throw new EletivaNotFoundException();
         }
 
         return eletiva;

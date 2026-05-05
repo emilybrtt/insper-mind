@@ -34,10 +34,10 @@ public class FavoritoService {
 
     public Favorito get(Integer id) {
         Favorito favorito = favoritoRepository.findById(id)
-                .orElseThrow(() -> new FavoritoNotFoundException("Favorito não encontrado"));
+                .orElseThrow(() -> new FavoritoNotFoundException());
 
         if (!favorito.getAtivo()) {
-            throw new FavoritoNotFoundException("Favorito não encontrado");
+            throw new FavoritoNotFoundException();
         }
 
         return favorito;

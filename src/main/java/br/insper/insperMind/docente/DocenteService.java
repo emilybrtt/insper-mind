@@ -19,10 +19,10 @@ public class DocenteService {
 
     public Docente get(Integer id) {
         Docente docente = docenteRepository.findById(id)
-                .orElseThrow(() -> new DocenteNotFoundException("Docente não encontrado"));
+                .orElseThrow(() -> new DocenteNotFoundException());
 
         if (!docente.getAtivo()) {
-            throw new DocenteNotFoundException("Docente não encontrado");
+            throw new DocenteNotFoundException();
         }
 
         return docente;
@@ -34,10 +34,10 @@ public class DocenteService {
 
     public Docente findByEmail(String email) {
         Docente docente = docenteRepository.findByEmail(email)
-                .orElseThrow(() -> new DocenteNotFoundException("Docente não encontrado"));
+                .orElseThrow(() -> new DocenteNotFoundException());
 
         if (!docente.getAtivo()) {
-            throw new DocenteNotFoundException("Docente não encontrado");
+            throw new DocenteNotFoundException();
         }
 
         return docente;
@@ -48,7 +48,7 @@ public class DocenteService {
 
     public ResponseDocenteDTO save(SaveDocenteDTO dto) {
         if (docenteRepository.existsByNome(dto.getNome())) {
-            throw new DocenteAlreadyExistsException("Docente já cadastrado");
+            throw new DocenteAlreadyExistsException();
         }
 
         Docente docente = Docente.toModel(dto);

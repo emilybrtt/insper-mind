@@ -27,7 +27,7 @@ public class MaterialService {
     public Material get(Integer id) {
         return materialRepository.findById(id)
                 .filter(Material::getAtivo)
-                .orElseThrow(() -> new MaterialNotFoundException("Material não encontrado"));
+                .orElseThrow(() -> new MaterialNotFoundException());
     }
 
     public ResponseMaterialDTO getDTO(Integer id) {
@@ -39,7 +39,7 @@ public class MaterialService {
         Curso curso = cursoService.get(dto.getCursoId());
 
         if (materialRepository.existsByTitulo(dto.getTitulo())) {
-            throw new MaterialNotFoundException("Material já cadastrado");
+            throw new MaterialNotFoundException();
         }
         Material material = Material.toModel(dto, usuario, curso);
 
