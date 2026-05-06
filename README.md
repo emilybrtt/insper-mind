@@ -4,6 +4,14 @@ Projeto final da disciplina de Arquitetura de Objetos do 3o semestre de Ciencia 
 
 O Insper Mind e uma plataforma academica para centralizar informacoes uteis aos alunos, incluindo cursos, semestres, disciplinas, docentes, eletivas, materiais de estudo, comentarios, favoritos e usuarios. A proposta e oferecer uma interface simples integrada a uma API REST, com persistencia em banco de dados e organizacao orientada a objetos.
 
+## Grupo
+
+- Emily Britto
+- Gabriel Aguiar
+- Giovanni
+- Hector Mathias
+- Vanessa
+
 ## Links do projeto
 
 - Frontend: https://project-n6wej.vercel.app/#/
