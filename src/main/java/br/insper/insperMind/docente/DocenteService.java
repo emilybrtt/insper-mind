@@ -1,6 +1,5 @@
 package br.insper.insperMind.docente;
 
-import br.insper.insperMind.docente.Docente;
 import br.insper.insperMind.docente.dto.EditDocenteDTO;
 import br.insper.insperMind.docente.dto.ResponseDocenteDTO;
 import br.insper.insperMind.docente.dto.SaveDocenteDTO;
@@ -21,7 +20,7 @@ public class DocenteService {
 
     public Docente get(Integer id) {
         Docente docente = docenteRepository.findById(id)
-                .orElseThrow(() -> new DocenteNotFoundException());
+                .orElseThrow(DocenteNotFoundException::new);
 
         if (!docente.getAtivo()) {
             throw new DocenteNotFoundException();
@@ -30,36 +29,18 @@ public class DocenteService {
         return docente;
     }
 
-    public ResponseDocenteDTO getDTO(Integer id) {
+    public ResponseDocenteDTO getDto(Integer id) {
         return ResponseDocenteDTO.toDTO(get(id));
     }
 
-    public Docente findByEmail(String email) {
-        Docente docente = docenteRepository.findByEmail(email)
-                .orElseThrow(() -> new DocenteNotFoundException());
-
-        if (!docente.getAtivo()) {
-            throw new DocenteNotFoundException();
-        }
-
-        return docente;
-    }
-    public List<Docente> findAllById(List<Integer> ids) {
-        return docenteRepository.findAllById(ids);
-    }
-    public ResponseDocenteDTO getDto(String email) {
-        return ResponseDocenteDTO.toDTO(findByEmail(email));
-    }
-
     public ResponseDocenteDTO save(SaveDocenteDTO dto) {
-        if (docenteRepository.existsByNome(dto.getNome())) {
+        if (docenteRepository.existsByNome(dto.getNome()) || docenteRepository.existsByEmail(dto.getEmail())) {
             throw new DocenteAlreadyExistsException();
         }
 
         Docente docente = Docente.toModel(dto);
-        docente.setAtivo(true);
-
         docente = docenteRepository.save(docente);
+
         return ResponseDocenteDTO.toDTO(docente);
     }
 
@@ -68,23 +49,40 @@ public class DocenteService {
                 .map(ResponseDocenteDTO::toDTO);
     }
 
-    public ResponseDocenteDTO update(String email, EditDocenteDTO dto) {
-        Docente docente = findByEmail(email);
+    public ResponseDocenteDTO update(Integer id, EditDocenteDTO dto) {
+        Docente docente = get(id);
+
+        if (dto.getNome() != null
+                && !dto.getNome().equals(docente.getNome())
+                && docenteRepository.existsByNome(dto.getNome())) {
+            throw new DocenteAlreadyExistsException();
+        }
+
+        if (dto.getEmail() != null
+                && !dto.getEmail().equals(docente.getEmail())
+                && docenteRepository.existsByEmail(dto.getEmail())) {
+            throw new DocenteAlreadyExistsException();
+        }
 
         if (dto.getNome() != null) {
             docente.setNome(dto.getNome());
         }
+
         if (dto.getEmail() != null) {
             docente.setEmail(dto.getEmail());
         }
 
-        return ResponseDocenteDTO.toDTO(docenteRepository.save(docente));
+        docente = docenteRepository.save(docente);
+        return ResponseDocenteDTO.toDTO(docente);
     }
 
     public void delete(Integer id) {
         Docente docente = get(id);
-
         docente.setAtivo(false);
         docenteRepository.save(docente);
+    }
+
+    public List<Docente> findAllById(List<Integer> ids) {
+        return docenteRepository.findAllById(ids);
     }
 }

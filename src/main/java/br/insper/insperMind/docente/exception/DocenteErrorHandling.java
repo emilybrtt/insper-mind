@@ -19,35 +19,31 @@ public class DocenteErrorHandling {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorDTO handleDocenteNotFoundException(DocenteNotFoundException ex,
-                                                 HttpServletRequest request) {
+                                                   HttpServletRequest request) {
+        log.error("Docente nao encontrado", ex);
 
-        log.error("Docente nao encontrado");
-
-        ErrorDTO errorDTO =  new ErrorDTO();
-        errorDTO.setMensagem("Docente nao encontrado");
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem(ex.getMessage());
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.NOT_FOUND.value());
-        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setCodigoErro("DOCENTE_NOT_FOUND");
         errorDTO.setPath(request.getRequestURI());
-        return  errorDTO;
-
+        return errorDTO;
     }
 
     @ExceptionHandler(DocenteAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
     public ErrorDTO handleDocenteAlreadyExistsException(DocenteAlreadyExistsException ex,
-                                                      HttpServletRequest request) {
+                                                        HttpServletRequest request) {
+        log.error("Docente já cadastrado", ex);
 
-        ErrorDTO errorDTO =  new ErrorDTO();
-        errorDTO.setMensagem("Docente já cadastrado");
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem(ex.getMessage());
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.CONFLICT.value());
-        errorDTO.setCodigoErro("CURSO_ALREADY_EXISTS");
+        errorDTO.setCodigoErro("DOCENTE_ALREADY_EXISTS");
         errorDTO.setPath(request.getRequestURI());
-        return  errorDTO;
-
+        return errorDTO;
     }
-
-
 }

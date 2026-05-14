@@ -1,5 +1,6 @@
 package br.insper.insperMind.docente.dto;
 
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class EditDocenteDTO {
     private String nome;
-    private String email;
 
+    @Email(message = "Email do docente inválido")
+    private String email;
 }
