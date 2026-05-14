@@ -1,6 +1,7 @@
 package br.insper.insperMind.disciplina.dto;
 
 import br.insper.insperMind.disciplina.Disciplina;
+import br.insper.insperMind.docente.dto.DocenteResumoDTO;
 import lombok.Getter;
 import lombok.Setter;
 
