@@ -3,6 +3,7 @@ package br.insper.insperMind.curso;
 import br.insper.insperMind.curso.dto.EditCursoDTO;
 import br.insper.insperMind.curso.dto.ResponseCursoDTO;
 import br.insper.insperMind.curso.dto.SaveCursoDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ public class CursoController {
     private CursoService cursoService;
 
     @PostMapping
-    public ResponseCursoDTO saveCurso(@RequestBody SaveCursoDTO dto) {
+    public ResponseCursoDTO saveCurso(@Valid @RequestBody SaveCursoDTO dto) {
         return cursoService.save(dto);
     }
 
@@ -31,7 +32,7 @@ public class CursoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseCursoDTO editCurso(@PathVariable Integer id, @RequestBody EditCursoDTO dto) {
+    public ResponseCursoDTO editCurso(@PathVariable Integer id, @Valid @RequestBody EditCursoDTO dto) {
         return cursoService.edit(id, dto);
     }
 
