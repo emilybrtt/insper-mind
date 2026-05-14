@@ -49,5 +49,20 @@ public class MaterialErrorHandling {
 
     }
 
+    @ExceptionHandler(MaterialForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorDTO handleMaterialForbiddenException(MaterialForbiddenException ex,
+                                                     HttpServletRequest request) {
+
+        ErrorDTO errorDTO =  new ErrorDTO();
+        errorDTO.setMensagem("Apenas o criador do material pode edita-lo ou deleta-lo");
+        errorDTO.setData(LocalDateTime.now());
+        errorDTO.setCodigoHttp(HttpStatus.FORBIDDEN.value());
+        errorDTO.setCodigoErro("MATERIAL_FORBIDDEN");
+        errorDTO.setPath(request.getRequestURI());
+        return  errorDTO;
+
+    }
 
 }

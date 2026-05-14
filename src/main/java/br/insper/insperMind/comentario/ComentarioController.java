@@ -16,8 +16,18 @@ public class ComentarioController {
     private ComentarioService comentarioService;
 
     @GetMapping
-    public Page<ResponseComentarioDTO> listComentarios(Pageable pageable) {
-        return comentarioService.list(pageable);
+    public Page<ResponseComentarioDTO> listComentarios(
+            @RequestParam(required = false) Integer idDisciplina,
+            @RequestParam(required = false) Integer idMaterial,
+            @RequestParam(required = false) Integer comentarioPaiId,
+            Pageable pageable) {
+
+        return comentarioService.list(idDisciplina, idMaterial, comentarioPaiId, pageable);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseComentarioDTO getComentario(@PathVariable Integer id) {
+        return comentarioService.getDTO(id);
     }
 
     @PostMapping
@@ -27,8 +37,9 @@ public class ComentarioController {
 
     @PutMapping("/{id}")
     public ResponseComentarioDTO editComentario(@PathVariable Integer id,
+                                                @RequestHeader String emailUsuario,
                                                 @RequestBody EditComentarioDTO dto) {
-        return comentarioService.edit(id, dto);
+        return comentarioService.edit(id, dto, emailUsuario);
     }
 
     @PatchMapping("/{id}/curtir")
@@ -37,7 +48,8 @@ public class ComentarioController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteComentario(@PathVariable Integer id) {
-        comentarioService.delete(id);
+    public void deleteComentario(@PathVariable Integer id,
+                                 @RequestHeader String emailUsuario) {
+        comentarioService.delete(id, emailUsuario);
     }
 }

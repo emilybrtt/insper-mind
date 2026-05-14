@@ -31,8 +31,10 @@ public class MaterialController {
     }
 
     @PutMapping("/{id}")
-    public ResponseMaterialDTO edit(@PathVariable Integer id, @RequestBody EditMaterialDTO dto) {
-        return materialService.edit(id, dto);
+    public ResponseMaterialDTO edit(@PathVariable Integer id,
+                                    @RequestBody EditMaterialDTO dto,
+                                    @RequestHeader String emailUsuario) {
+        return materialService.edit(id, dto, emailUsuario);
     }
 
     @DeleteMapping("/{id}")
