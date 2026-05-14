@@ -3,6 +3,7 @@ package br.insper.insperMind.disciplina;
 import br.insper.insperMind.disciplina.dto.EditDisciplinaDTO;
 import br.insper.insperMind.disciplina.dto.ResponseDisciplinaDTO;
 import br.insper.insperMind.disciplina.dto.SaveDisciplinaDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ public class DisciplinaController {
     private DisciplinaService disciplinaService;
 
     @PostMapping
-    public ResponseDisciplinaDTO saveDisciplina(@RequestBody SaveDisciplinaDTO dto) {
+    public ResponseDisciplinaDTO saveDisciplina(@Valid @RequestBody SaveDisciplinaDTO dto) {
         return disciplinaService.save(dto);
     }
 
@@ -31,8 +32,21 @@ public class DisciplinaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseDisciplinaDTO editDisciplina(@PathVariable Integer id, @RequestBody EditDisciplinaDTO dto) {
+    public ResponseDisciplinaDTO editDisciplina(@PathVariable Integer id,
+                                                @Valid @RequestBody EditDisciplinaDTO dto) {
         return disciplinaService.edit(id, dto);
+    }
+
+    @PostMapping("/{id}/docentes/{docenteId}")
+    public ResponseDisciplinaDTO addDocente(@PathVariable Integer id,
+                                            @PathVariable Integer docenteId) {
+        return disciplinaService.addDocente(id, docenteId);
+    }
+
+    @DeleteMapping("/{id}/docentes/{docenteId}")
+    public ResponseDisciplinaDTO removeDocente(@PathVariable Integer id,
+                                               @PathVariable Integer docenteId) {
+        return disciplinaService.removeDocente(id, docenteId);
     }
 
     @DeleteMapping("/{id}")

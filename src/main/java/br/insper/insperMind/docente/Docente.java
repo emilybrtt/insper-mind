@@ -1,4 +1,5 @@
 package br.insper.insperMind.docente;
+
 import br.insper.insperMind.disciplina.Disciplina;
 import br.insper.insperMind.docente.dto.SaveDocenteDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,7 +29,7 @@ public class Docente {
     private String email;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "docente")
+    @ManyToMany(mappedBy = "docentes")
     private List<Disciplina> disciplinas;
 
     @CreationTimestamp

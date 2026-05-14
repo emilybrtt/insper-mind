@@ -8,10 +8,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -37,9 +37,13 @@ public class Disciplina {
     @OneToMany(mappedBy = "disciplina")
     private List<Material> materiais;
 
-    @ManyToOne
-    @JoinColumn(name = "id_docente")
-    private Docente docente;
+    @ManyToMany
+    @JoinTable(
+            name = "disciplina_docente",
+            joinColumns = @JoinColumn(name = "id_disciplina"),
+            inverseJoinColumns = @JoinColumn(name = "id_docente")
+    )
+    private List<Docente> docentes = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "id_semestre")
@@ -56,5 +60,5 @@ public class Disciplina {
 
     @NotNull
     @Column(nullable = false)
-    private Boolean ativo;
+    private Boolean ativo = true;
 }

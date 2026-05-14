@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 
 @Repository
 public interface DisciplinaRepository extends JpaRepository<Disciplina, Integer> {
-    boolean existsByNome(String nome);
+    boolean existsByNomeAndAtivoTrue(String nome);
     Page<Disciplina> findByAtivoTrue(Pageable pageable);
+
 }

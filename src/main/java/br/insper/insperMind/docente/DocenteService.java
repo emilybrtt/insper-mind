@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DocenteService {
 
@@ -41,6 +43,9 @@ public class DocenteService {
         }
 
         return docente;
+    }
+    public List<Docente> findAllById(List<Integer> ids) {
+        return docenteRepository.findAllById(ids);
     }
     public ResponseDocenteDTO getDto(String email) {
         return ResponseDocenteDTO.toDTO(findByEmail(email));
