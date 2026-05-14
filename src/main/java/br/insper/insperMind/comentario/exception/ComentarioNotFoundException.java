@@ -1,8 +1,7 @@
 package br.insper.insperMind.comentario.exception;
 
 public class ComentarioNotFoundException extends RuntimeException {
-
-    public ComentarioNotFoundException(String message) {
+    public ComentarioNotFoundException() {
         super("Comentario nao encontrado");
     }
 }
