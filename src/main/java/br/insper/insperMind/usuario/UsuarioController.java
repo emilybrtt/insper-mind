@@ -4,6 +4,7 @@ import br.insper.insperMind.usuario.dto.EditUsuarioDTO;
 import br.insper.insperMind.usuario.dto.LoginUsuarioDTO;
 import br.insper.insperMind.usuario.dto.ResponseUsuarioDTO;
 import br.insper.insperMind.usuario.dto.SaveUsuarioDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,19 +24,20 @@ public class UsuarioController {
         return usuarioService.list(pageable);
     }
 
-    @GetMapping("/{email}")
-    public ResponseUsuarioDTO getUsuario(@PathVariable String email) {
-        return usuarioService.getDto(email);
+    @GetMapping("/{id}")
+    public ResponseUsuarioDTO getUsuario(@PathVariable Integer id) {
+        return usuarioService.getDTO(id);
     }
 
     @PostMapping
-    public ResponseUsuarioDTO saveUsuario(@RequestBody SaveUsuarioDTO dto) {
+    public ResponseUsuarioDTO saveUsuario(@Valid @RequestBody SaveUsuarioDTO dto) {
         return usuarioService.save(dto);
     }
 
-    @PatchMapping("/{email}")
-    public ResponseUsuarioDTO updateUsuario(@PathVariable String email, @RequestBody EditUsuarioDTO dto) {
-        return usuarioService.update(email, dto);
+    @PatchMapping("/{id}")
+    public ResponseUsuarioDTO updateUsuario(@PathVariable Integer id,
+                                            @Valid @RequestBody EditUsuarioDTO dto) {
+        return usuarioService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
@@ -44,13 +46,14 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginUsuarioDTO loginDTO) {
+    public ResponseEntity<String> login(@Valid @RequestBody LoginUsuarioDTO loginDTO) {
         boolean isAuthenticated = usuarioService.authenticate(loginDTO);
 
         if (isAuthenticated) {
             return ResponseEntity.ok("Login bem-sucedido!");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email ou senha inválidos.");
         }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Email ou senha inválidos.");
     }
 }

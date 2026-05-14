@@ -31,5 +31,5 @@ public class Semestre {
 
     @NotNull
     @Column(nullable = false)
-    private Boolean ativo;
+    private Boolean ativo = true;
 }

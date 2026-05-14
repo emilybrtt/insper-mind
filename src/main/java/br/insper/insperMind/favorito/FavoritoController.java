@@ -2,6 +2,7 @@ package br.insper.insperMind.favorito;
 
 import br.insper.insperMind.favorito.dto.ResponseFavoritoDTO;
 import br.insper.insperMind.favorito.dto.SaveFavoritoDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,8 +21,8 @@ public class FavoritoController {
     }
 
     @PostMapping
-    public ResponseFavoritoDTO saveFavorito(@RequestBody SaveFavoritoDTO dto) {
-        return favoritoService.save(dto);
+    public ResponseFavoritoDTO saveFavorito(@Valid @RequestBody SaveFavoritoDTO dto){
+    return favoritoService.save(dto);
     }
 
     @DeleteMapping("/{id}")

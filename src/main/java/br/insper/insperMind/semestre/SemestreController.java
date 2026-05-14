@@ -3,6 +3,7 @@ package br.insper.insperMind.semestre;
 import br.insper.insperMind.semestre.dto.EditSemestreDTO;
 import br.insper.insperMind.semestre.dto.ResponseSemestreDTO;
 import br.insper.insperMind.semestre.dto.SaveSemestreDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,8 @@ public class SemestreController {
     private SemestreService semestreService;
 
     @PostMapping
-    public ResponseSemestreDTO save(@RequestBody SaveSemestreDTO dto) {
+    public ResponseSemestreDTO save(@Valid @RequestBody SaveSemestreDTO dto)
+    {
         return semestreService.save(dto);
     }
 
@@ -31,7 +33,7 @@ public class SemestreController {
     }
 
     @PutMapping("/{id}")
-    public ResponseSemestreDTO edit(@PathVariable Integer id, @RequestBody EditSemestreDTO dto) {
+    public ResponseSemestreDTO edit(@PathVariable Integer id, @Valid @RequestBody EditSemestreDTO dto) {
         return semestreService.edit(id, dto);
     }
 

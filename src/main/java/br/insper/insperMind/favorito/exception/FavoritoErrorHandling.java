@@ -27,7 +27,7 @@ public class FavoritoErrorHandling {
         errorDTO.setMensagem("Favorito nao encontrado");
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.NOT_FOUND.value());
-        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setCodigoErro("FAVORITO_NOT_FOUND");
         errorDTO.setPath(request.getRequestURI());
         return  errorDTO;
 
@@ -45,7 +45,7 @@ public class FavoritoErrorHandling {
         errorDTO.setMensagem("Material já favoritado");
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.CONFLICT.value());
-        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setCodigoErro("MATERIAL_ALREADY_FAVORITED");
         errorDTO.setPath(request.getRequestURI());
         return  errorDTO;
 
@@ -63,7 +63,7 @@ public class FavoritoErrorHandling {
         errorDTO.setMensagem("Eletiva já favoritada");
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.CONFLICT.value());
-        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setCodigoErro("ELETIVA_ALREADY_FAVORITED");
         errorDTO.setPath(request.getRequestURI());
         return  errorDTO;
 
@@ -81,10 +81,24 @@ public class FavoritoErrorHandling {
         errorDTO.setMensagem("Esse item não existe");
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.BAD_REQUEST.value());
-        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setCodigoErro("INVALID_ITEM_TYPE");
         errorDTO.setPath(request.getRequestURI());
         return  errorDTO;
 
     }
 
+    @ExceptionHandler(FavoritoForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorDTO handleFavoritoForbiddenException(FavoritoForbiddenException ex,
+                                                     HttpServletRequest request) {
+
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem(ex.getMessage());
+        errorDTO.setData(LocalDateTime.now());
+        errorDTO.setCodigoHttp(HttpStatus.FORBIDDEN.value());
+        errorDTO.setCodigoErro("FAVORITO_FORBIDDEN");
+        errorDTO.setPath(request.getRequestURI());
+        return errorDTO;
+    }
 }

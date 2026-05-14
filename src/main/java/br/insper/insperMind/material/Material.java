@@ -3,6 +3,7 @@ package br.insper.insperMind.material;
 import br.insper.insperMind.disciplina.Disciplina;
 import br.insper.insperMind.material.dto.EditMaterialDTO;
 import br.insper.insperMind.material.dto.SaveMaterialDTO;
+import br.insper.insperMind.material.exception.MaterialInvalidTypeException;
 import br.insper.insperMind.usuario.Usuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -34,11 +35,11 @@ public class Material {
     private TipoMaterial tipo;
 
     @ManyToOne
-    @JoinColumn(name="id_usuario")
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name="id_disciplina")
+    @JoinColumn(name = "id_disciplina")
     private Disciplina disciplina;
 
     @CreationTimestamp
@@ -53,7 +54,13 @@ public class Material {
         material.setTitulo(dto.getTitulo());
         material.setDescricao(dto.getDescricao());
         material.setLink(dto.getLink());
-        material.setTipo(TipoMaterial.valueOf(dto.getTipo()));
+
+        try {
+            material.setTipo(TipoMaterial.valueOf(dto.getTipo().toUpperCase()));
+        } catch (IllegalArgumentException ex) {
+            throw new MaterialInvalidTypeException();
+        }
+
         material.setUsuario(usuario);
         material.setDisciplina(disciplina);
         material.setAtivo(true);
@@ -61,11 +68,27 @@ public class Material {
     }
 
     public void update(EditMaterialDTO dto, Disciplina disciplina) {
-        if (dto.getTitulo() != null) this.titulo = dto.getTitulo();
-        if (dto.getDescricao() != null) this.descricao = dto.getDescricao();
-        if (dto.getLink() != null) this.link = dto.getLink();
-        if (dto.getTipo() != null) this.tipo = TipoMaterial.valueOf(dto.getTipo());
-        if (dto.getAtivo() != null) this.ativo = dto.getAtivo();
-        if (disciplina != null) this.disciplina = disciplina;
+        if (dto.getTitulo() != null) {
+            this.titulo = dto.getTitulo();
+        }
+        if (dto.getDescricao() != null) {
+            this.descricao = dto.getDescricao();
+        }
+        if (dto.getLink() != null) {
+            this.link = dto.getLink();
+        }
+        if (dto.getTipo() != null) {
+            try {
+                this.tipo = TipoMaterial.valueOf(dto.getTipo().toUpperCase());
+            } catch (IllegalArgumentException ex) {
+                throw new MaterialInvalidTypeException();
+            }
+        }
+        if (dto.getAtivo() != null) {
+            this.ativo = dto.getAtivo();
+        }
+        if (disciplina != null) {
+            this.disciplina = disciplina;
+        }
     }
 }

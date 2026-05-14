@@ -2,6 +2,7 @@ package br.insper.insperMind.common;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,7 +13,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
+import jakarta.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.stream.LangCollectors.collect;
 
 @ControllerAdvice
 @Slf4j
@@ -27,7 +31,7 @@ public class GlobalErrorHandling {
         String mensagem = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(e -> e.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(","));
 
         ErrorDTO errorDTO = new ErrorDTO();
@@ -79,6 +83,23 @@ public class GlobalErrorHandling {
         errorDTO.setCodigoHttp(HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorDTO.setCodigoErro("INTERNAL_ERROR");
         errorDTO.setPath(request.getRequestURI());
+        return errorDTO;
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorDTO handleConstraintViolationException(
+            ConstraintViolationException ex,
+            HttpServletRequest request) {
+
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem("Dados invalidos");
+        errorDTO.setData(LocalDateTime.now());
+        errorDTO.setCodigoHttp(HttpStatus.BAD_REQUEST.value());
+        errorDTO.setCodigoErro("INPUT_ERROR");
+        errorDTO.setPath(request.getRequestURI());
+
         return errorDTO;
     }
 }

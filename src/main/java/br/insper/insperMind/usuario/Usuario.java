@@ -54,6 +54,7 @@ public class Usuario {
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
         usuario.setSenha(dto.getSenha());
+        usuario.setAtivo(true);
         return usuario;
     }
 }

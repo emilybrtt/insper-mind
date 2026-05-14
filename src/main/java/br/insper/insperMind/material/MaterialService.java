@@ -30,7 +30,7 @@ public class MaterialService {
     public Material get(Integer id) {
         return materialRepository.findById(id)
                 .filter(Material::getAtivo)
-                .orElseThrow(() -> new MaterialNotFoundException());
+                .orElseThrow(MaterialNotFoundException::new);
     }
 
     public ResponseMaterialDTO getDTO(Integer id) {
@@ -41,12 +41,14 @@ public class MaterialService {
         Usuario usuario = usuarioService.findByEmail(dto.getEmailUsuario());
         Disciplina disciplina = disciplinaService.get(dto.getDisciplinaId());
 
-        if (materialRepository.existsByTitulo(dto.getTitulo())) {
+        if (materialRepository.existsByTituloAndAtivoTrue(dto.getTitulo())) {
             throw new MaterialAlreadyExistsException();
         }
-        Material material = Material.toModel(dto, usuario, disciplina);
 
-        return ResponseMaterialDTO.toDTO(materialRepository.save(material));
+        Material material = Material.toModel(dto, usuario, disciplina);
+        material = materialRepository.save(material);
+
+        return ResponseMaterialDTO.toDTO(material);
     }
 
     public Page<ResponseMaterialDTO> list(Pageable pageable) {
@@ -54,12 +56,35 @@ public class MaterialService {
                 .map(ResponseMaterialDTO::toDTO);
     }
 
+    public Page<ResponseMaterialDTO> list(Integer disciplinaId, String emailUsuario, String tipo, Pageable pageable) {
+        if (disciplinaId != null) {
+            return materialRepository.findByAtivoTrueAndDisciplinaId(disciplinaId, pageable)
+                    .map(ResponseMaterialDTO::toDTO);
+        }
+
+        if (emailUsuario != null) {
+            return materialRepository.findByAtivoTrueAndUsuarioEmail(emailUsuario, pageable)
+                    .map(ResponseMaterialDTO::toDTO);
+        }
+
+        if (tipo != null) {
+            TipoMaterial tipoMaterial = TipoMaterial.valueOf(tipo.toUpperCase());
+            return materialRepository.findByAtivoTrueAndTipo(tipoMaterial, pageable)
+                    .map(ResponseMaterialDTO::toDTO);
+        }
+
+        return list(pageable);
+    }
+
     public ResponseMaterialDTO edit(Integer id, EditMaterialDTO dto, String emailUsuario) {
         Material material = get(id);
 
         validateOwner(material, emailUsuario);
 
-        Disciplina disciplina = (dto.getDisciplinaId() != null) ? disciplinaService.get(dto.getDisciplinaId()) : null;
+        Disciplina disciplina = (dto.getDisciplinaId() != null)
+                ? disciplinaService.get(dto.getDisciplinaId())
+                : null;
+
         material.update(dto, disciplina);
 
         return ResponseMaterialDTO.toDTO(materialRepository.save(material));
