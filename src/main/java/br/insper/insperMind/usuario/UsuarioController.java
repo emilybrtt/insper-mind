@@ -45,6 +45,10 @@ public class UsuarioController {
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDTO> login(@Valid @RequestBody LoginUsuarioDTO loginDTO) {
         String token = usuarioService.authenticateAndGenerateToken(loginDTO);
-        return ResponseEntity.ok(new TokenResponseDTO(token));
+
+        TokenResponseDTO dto = new TokenResponseDTO();
+        dto.setToken(token);
+
+        return ResponseEntity.ok(dto);
     }
 }
