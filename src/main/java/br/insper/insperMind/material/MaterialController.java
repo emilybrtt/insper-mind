@@ -61,7 +61,9 @@ public class MaterialController {
 
     @PostMapping("/upload")
     public ResponseMaterialDTO uploadArquivo(@RequestParam MultipartFile file,
-                                             @RequestParam Integer disciplinaId) {
+                                             @RequestParam Integer disciplinaId,
+                                             @RequestParam(required=false) String titulo,
+                                             @RequestParam(required=false) String descricao){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return materialService.salvarArquivo(file, disciplinaId, email);
     }

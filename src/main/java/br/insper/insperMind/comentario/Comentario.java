@@ -5,6 +5,8 @@ import br.insper.insperMind.disciplina.Disciplina;
 import br.insper.insperMind.material.Material;
 import br.insper.insperMind.usuario.Usuario;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -23,6 +25,8 @@ public class Comentario {
     private Integer id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Comentário não pode ser vazio")
+    @Size(max = 2000, message = "Comentário deve ter no máximo 2000 caracteres")
     private String comentario;
 
     @Column(nullable = false)

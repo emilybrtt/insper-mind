@@ -22,8 +22,8 @@ PROTECTED (autenticado)
 ├── /meu-perfil              → Dados do usuário + minhas disciplinas favoritas
 ├── /meus-materiais          → Materiais enviados pelo usuário
 ├── /favoritos               → Materiais e eletivas salvos
-├── /forum                   → Fórum de dúvidas (novo)
-└── /admin                   → Painel de administração (opcional)
+├── /forum                   → Fórum de dúvidas
+└── /admin                   → Painel de administração
 ```
 
 ### 1.2 Fluxo de Autenticação

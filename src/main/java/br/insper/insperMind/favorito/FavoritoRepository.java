@@ -13,4 +13,6 @@ public interface FavoritoRepository extends JpaRepository<Favorito, Integer> {
     boolean existsByUsuarioAndMaterial(Usuario usuario, Material material);
     boolean existsByUsuarioAndEletiva(Usuario usuario, Eletiva eletiva);
     Page<Favorito> findByUsuarioAndAtivoTrue(Usuario usuario, Pageable pageable);
+    Page<Favorito> findByUsuarioAndAtivoTrueAndMaterialIsNotNull(Usuario usuario, Pageable pageable);
+    Page<Favorito> findByUsuarioAndAtivoTrueAndEletivaIsNotNull(Usuario usuario, Pageable pageable);
 }

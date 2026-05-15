@@ -22,15 +22,16 @@ public class FavoritoController {
         return favoritoService.save(dto, email);
     }
 
-    @GetMapping
-    public Page<ResponseFavoritoDTO> list(Pageable pageable) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return favoritoService.list(email, pageable);
-    }
-
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         favoritoService.delete(id, email);
+    }
+
+    @GetMapping
+    public Page<ResponseFavoritoDTO> list(@RequestParam(required = false) TipoFavorito tipo,
+                                          Pageable pageable) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return favoritoService.list(email, tipo, pageable);
     }
 }

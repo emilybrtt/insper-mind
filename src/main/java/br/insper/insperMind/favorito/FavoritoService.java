@@ -83,9 +83,17 @@ public class FavoritoService {
         favoritoRepository.save(favorito);
     }
 
-    public Page<ResponseFavoritoDTO> list(String emailUsuario, Pageable pageable) {
+    public Page<ResponseFavoritoDTO> list(String emailUsuario, TipoFavorito tipo, Pageable pageable) {
         Usuario usuario = usuarioService.findByEmail(emailUsuario);
 
+        if (tipo == TipoFavorito.MATERIAL) {
+            return favoritoRepository.findByUsuarioAndAtivoTrueAndMaterialIsNotNull(usuario, pageable)
+                    .map(ResponseFavoritoDTO::toDTO);
+        }
+        if (tipo == TipoFavorito.ELETIVA) {
+            return favoritoRepository.findByUsuarioAndAtivoTrueAndEletivaIsNotNull(usuario, pageable)
+                    .map(ResponseFavoritoDTO::toDTO);
+        }
         return favoritoRepository.findByUsuarioAndAtivoTrue(usuario, pageable)
                 .map(ResponseFavoritoDTO::toDTO);
     }

@@ -62,28 +62,28 @@ public class MaterialService {
         return ResponseMaterialDTO.toDTO(material);
     }
 
-    public Page<ResponseMaterialDTO> list(Pageable pageable) {
-        return materialRepository.findByAtivoTrue(pageable)
-                .map(ResponseMaterialDTO::toDTO);
-    }
-
     public Page<ResponseMaterialDTO> list(Integer cursoId, Integer disciplinaId, String emailUsuario, String tipo, Pageable pageable) {
+
+        TipoMaterial tipoEnum = (tipo != null) ? TipoMaterial.valueOf(tipo.toUpperCase()) : null;
+
+        if (cursoId != null) {
+            return materialRepository.findByDisciplinaSemestreCursoIdAndTipo(cursoId, tipoEnum, pageable)
+                    .map(ResponseMaterialDTO::toDTO);
+        }
+        if (disciplinaId != null) {
+            return materialRepository.findByDisciplinaIdAndTipo(disciplinaId, tipoEnum, pageable)
+                    .map(ResponseMaterialDTO::toDTO);
+        }
+        if (tipoEnum != null) {
+            return materialRepository.findByTipo(tipoEnum, pageable)
+                    .map(ResponseMaterialDTO::toDTO);
+        }
+
         if (emailUsuario != null) {
             return materialRepository.findByUsuarioEmailAndAtivoTrue(emailUsuario, pageable)
                     .map(ResponseMaterialDTO::toDTO);
         }
-        if (cursoId != null) {
-            return materialRepository.findByDisciplinaSemestreCursoIdAndTipo(cursoId, tipo, pageable)
-                    .map(ResponseMaterialDTO::toDTO);
-        }
-        if (disciplinaId != null) {
-            return materialRepository.findByDisciplinaIdAndTipo(disciplinaId, tipo, pageable)
-                    .map(ResponseMaterialDTO::toDTO);
-        }
-        if (tipo != null) {
-            return materialRepository.findByTipo(tipo, pageable)
-                    .map(ResponseMaterialDTO::toDTO);
-        }
+
         return materialRepository.findAll(pageable).map(ResponseMaterialDTO::toDTO);
     }
 
@@ -123,7 +123,7 @@ public class MaterialService {
 
         if (material.getUsuariosQueCurtiram().contains(usuario)) {
             material.getUsuariosQueCurtiram().remove(usuario);
-            material.setCurtidas(material.getCurtidas() - 1);
+            material.setCurtidas(Math.max(0, material.getCurtidas() - 1));
         } else {
             material.getUsuariosQueCurtiram().add(usuario);
             material.setCurtidas(material.getCurtidas() + 1);

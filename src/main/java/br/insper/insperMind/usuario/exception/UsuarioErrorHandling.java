@@ -46,4 +46,17 @@ public class UsuarioErrorHandling {
         errorDTO.setPath(request.getRequestURI());
         return errorDTO;
     }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ErrorDTO handleUnauthorizedException(UnauthorizedException ex, HttpServletRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem(ex.getMessage());
+        errorDTO.setData(LocalDateTime.now());
+        errorDTO.setCodigoHttp(HttpStatus.UNAUTHORIZED.value());
+        errorDTO.setCodigoErro("UNAUTHORIZED");
+        errorDTO.setPath(request.getRequestURI());
+        return errorDTO;
+    }
 }

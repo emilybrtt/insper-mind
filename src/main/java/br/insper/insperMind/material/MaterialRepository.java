@@ -11,4 +11,7 @@ public interface MaterialRepository extends JpaRepository<Material, Integer> {
     Page<Material> findByDisciplinaIdAndTipo(Integer disciplinaId, String tipo, Pageable pageable);
     Page<Material> findByTipo(String tipo, Pageable pageable);
     Page<Material> findByUsuarioEmailAndAtivoTrue(String email, Pageable pageable);
+    Page<Material> findByDisciplinaSemestreCursoIdAndTipo(Integer cursoId, TipoMaterial tipo, Pageable pageable);
+    Page<Material> findByDisciplinaIdAndTipo(Integer disciplinaId, TipoMaterial tipo, Pageable pageable);
+    Page<Material> findByTipo(TipoMaterial tipo, Pageable pageable);
 }
