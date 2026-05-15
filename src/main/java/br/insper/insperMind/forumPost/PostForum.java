@@ -18,7 +18,7 @@ public class PostForum {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String titulo;
 
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -44,4 +44,11 @@ public class PostForum {
     @Column(nullable = false)
     private Integer curtidas = 0;
 
+    @ManyToMany
+    @JoinTable(
+            name = "post_forum_curtida",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
+    )
+    private List<Usuario> usuariosQueCurtiram = new ArrayList<>();
 }

@@ -52,8 +52,8 @@ public class ComentarioService {
         return ResponseComentarioDTO.toDTO(get(id));
     }
 
-    public ResponseComentarioDTO save(SaveComentarioDTO dto) {
-        Usuario usuario = usuarioService.findByEmail(dto.getEmailUsuario());
+    public ResponseComentarioDTO save(SaveComentarioDTO dto, String emailUsuario) {
+        Usuario usuario = usuarioService.findByEmail(emailUsuario);
 
         Disciplina disciplina = null;
         Material material = null;

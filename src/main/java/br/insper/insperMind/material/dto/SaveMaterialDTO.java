@@ -21,9 +21,6 @@ public class SaveMaterialDTO {
     @NotBlank(message = "Tipo é obrigatório")
     private String tipo;
 
-    @NotBlank(message = "Email do usuario é obrigatório")
-    private String emailUsuario;
-
     @NotNull(message = "Disciplina é obrigatória")
     private Integer disciplinaId;
 }

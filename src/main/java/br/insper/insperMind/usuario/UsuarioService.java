@@ -20,6 +20,9 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     public Usuario get(Integer id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(UsuarioNotFoundException::new);
@@ -113,6 +116,13 @@ public class UsuarioService {
         if (!result.verified || !usuario.getAtivo()) {
             throw new UnauthorizedException();
         }
-        return JwtUtil.generateToken(usuario.getEmail(), usuario.getId());
+        return jwtUtil.generateToken(usuario.getEmail(), usuario.getId());
+    }
+
+    public void validateOwner(Integer id, String emailUsuario) {
+        Usuario usuario = get(id);
+        if (!usuario.getEmail().equals(emailUsuario)) {
+            throw new UnauthorizedException();
+        }
     }
 }

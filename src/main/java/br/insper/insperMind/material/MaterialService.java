@@ -48,8 +48,8 @@ public class MaterialService {
         return ResponseMaterialDTO.toDTO(get(id));
     }
 
-    public ResponseMaterialDTO save(SaveMaterialDTO dto) {
-        Usuario usuario = usuarioService.findByEmail(dto.getEmailUsuario());
+    public ResponseMaterialDTO save(SaveMaterialDTO dto, String emailUsuario) {
+        Usuario usuario = usuarioService.findByEmail(emailUsuario);
         Disciplina disciplina = disciplinaService.get(dto.getDisciplinaId());
 
         if (materialRepository.existsByTituloAndAtivoTrue(dto.getTitulo())) {
@@ -68,6 +68,10 @@ public class MaterialService {
     }
 
     public Page<ResponseMaterialDTO> list(Integer cursoId, Integer disciplinaId, String emailUsuario, String tipo, Pageable pageable) {
+        if (emailUsuario != null) {
+            return materialRepository.findByUsuarioEmailAndAtivoTrue(emailUsuario, pageable)
+                    .map(ResponseMaterialDTO::toDTO);
+        }
         if (cursoId != null) {
             return materialRepository.findByDisciplinaSemestreCursoIdAndTipo(cursoId, tipo, pageable)
                     .map(ResponseMaterialDTO::toDTO);

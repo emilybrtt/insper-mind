@@ -45,6 +45,9 @@ public class FavoritoService {
     }
 
     public ResponseFavoritoDTO save(SaveFavoritoDTO dto, String emailUsuario) {
+        if (dto.getMaterialId() == null && dto.getEletivaId() == null) {
+            throw new InvalidItemTypeException();
+        }
         Usuario usuario = usuarioService.findByEmail(emailUsuario);
 
         Favorito favorito = new Favorito();

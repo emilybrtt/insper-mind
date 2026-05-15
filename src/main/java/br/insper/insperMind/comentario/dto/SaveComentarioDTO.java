@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 public class SaveComentarioDTO {
     private String comentario;
-    private String emailUsuario;
     private Integer idDisciplina;
     private Integer idMaterial;
     private Integer comentarioPaiId;

@@ -24,7 +24,6 @@ public class ResponseComentarioDTO {
     private String tituloMaterial;
 
     private Integer comentarioPaiId;
-    private List<ResponseComentarioDTO> respostas;
 
     public static ResponseComentarioDTO toDTO(Comentario comentario) {
         ResponseComentarioDTO dto = new ResponseComentarioDTO();
@@ -51,16 +50,6 @@ public class ResponseComentarioDTO {
         if (comentario.getComentarioPai() != null) {
             dto.setComentarioPaiId(comentario.getComentarioPai().getId());
         }
-
-        if (comentario.getRespostas() != null) {
-            dto.setRespostas(
-                    comentario.getRespostas()
-                            .stream()
-                            .map(ResponseComentarioDTO::toDTO)
-                            .toList()
-            );
-        }
-
         return dto;
     }
 }

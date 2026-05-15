@@ -3,6 +3,8 @@ package br.insper.insperMind.forumPost;
 import br.insper.insperMind.forumPost.dto.SavePostForumDTO;
 import br.insper.insperMind.forumPost.dto.EditPostForumDTO;
 import br.insper.insperMind.forumPost.dto.ResponsePostForumDTO;
+import br.insper.insperMind.usuario.Usuario;
+import br.insper.insperMind.usuario.UsuarioRepository;
 import br.insper.insperMind.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,8 +19,12 @@ import java.time.LocalDateTime;
 public class PostForumService {
     @Autowired
     private PostForumRepository postRepository;
+
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public ResponsePostForumDTO save(SavePostForumDTO dto, String emailUsuario) {
         PostForum post = new PostForum();
@@ -41,12 +47,14 @@ public class PostForumService {
     public ResponsePostForumDTO getDTO(Integer id) {
         PostForum post = postRepository.findById(id)
                 .filter(PostForum::getAtivo)
-                .orElseThrow(() -> new PostNotFoundException());
+                .orElseThrow(PostNotFoundException::new);
         return ResponsePostForumDTO.toDTO(post);
     }
 
     public ResponsePostForumDTO edit(Integer id, EditPostForumDTO dto, String emailUsuario) {
-        PostForum post = postRepository.findById(id).orElseThrow();
+        PostForum post = postRepository.findById(id)
+                .filter(PostForum::getAtivo)
+                .orElseThrow(PostNotFoundException::new);
         if (!post.getUsuario().getEmail().equals(emailUsuario)) {
             throw new ForbiddenException();
         }
@@ -58,7 +66,9 @@ public class PostForumService {
     }
 
     public void delete(Integer id, String emailUsuario) {
-        PostForum post = postRepository.findById(id).orElseThrow();
+        PostForum post = postRepository.findById(id)
+                .filter(PostForum::getAtivo)
+                .orElseThrow(PostNotFoundException::new);
         if (!post.getUsuario().getEmail().equals(emailUsuario)) {
             throw new ForbiddenException();
         }
@@ -67,9 +77,18 @@ public class PostForumService {
     }
 
     public ResponsePostForumDTO curtir(Integer id, String emailUsuario) {
-        PostForum post = postRepository.findById(id).orElseThrow();
-        // Implementar lógica de curtida (similar a Comentário)
-        post.setCurtidas(post.getCurtidas() + 1);
+        PostForum post = postRepository.findById(id)
+                .filter(PostForum::getAtivo)
+                .orElseThrow(PostNotFoundException::new);
+        Usuario usuario = usuarioRepository.findByEmail(emailUsuario)
+                .orElseThrow();
+        if (post.getUsuariosQueCurtiram().contains(usuario)) {
+            post.getUsuariosQueCurtiram().remove(usuario);
+            post.setCurtidas(post.getCurtidas() - 1);
+        } else {
+            post.getUsuariosQueCurtiram().add(usuario);
+            post.setCurtidas(post.getCurtidas() + 1);
+        }
         post = postRepository.save(post);
         return ResponsePostForumDTO.toDTO(post);
     }

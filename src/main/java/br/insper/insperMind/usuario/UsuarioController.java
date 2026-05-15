@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,11 +35,15 @@ public class UsuarioController {
     @PatchMapping("/{id}")
     public ResponseUsuarioDTO updateUsuario(@PathVariable Integer id,
                                             @Valid @RequestBody EditUsuarioDTO dto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        usuarioService.validateOwner(id, email);
         return usuarioService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
     public void deleteUsuario(@PathVariable Integer id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        usuarioService.validateOwner(id, email);
         usuarioService.delete(id);
     }
 

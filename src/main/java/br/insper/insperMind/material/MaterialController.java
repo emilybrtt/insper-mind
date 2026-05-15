@@ -20,7 +20,8 @@ public class MaterialController {
 
     @PostMapping
     public ResponseMaterialDTO save(@Valid @RequestBody SaveMaterialDTO dto) {
-        return materialService.save(dto);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return materialService.save(dto, email);
     }
 
     @GetMapping

@@ -33,7 +33,8 @@ public class ComentarioController {
 
     @PostMapping
     public ResponseComentarioDTO saveComentario(@Valid @RequestBody SaveComentarioDTO dto) {
-        return comentarioService.save(dto);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return comentarioService.save(dto, email);
     }
 
     @PutMapping("/{id}")
