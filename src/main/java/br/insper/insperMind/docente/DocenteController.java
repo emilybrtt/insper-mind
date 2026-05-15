@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,11 +28,13 @@ public class DocenteController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseDocenteDTO saveDocente(@Valid @RequestBody SaveDocenteDTO dto) {
         return docenteService.save(dto);
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseDocenteDTO updateDocente(@PathVariable Integer id,
                                             @Valid @RequestBody EditDocenteDTO dto) {
         return docenteService.update(id, dto);

@@ -150,4 +150,10 @@ public class MaterialService {
         material = materialRepository.save(material);
         return ResponseMaterialDTO.toDTO(material);
     }
+
+    public void adminDelete(Integer id) {
+        Material material = get(id);
+        material.setAtivo(false);
+        materialRepository.save(material);
+    }
 }

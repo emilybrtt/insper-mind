@@ -92,4 +92,16 @@ public class PostForumService {
         post = postRepository.save(post);
         return ResponsePostForumDTO.toDTO(post);
     }
+
+    private PostForum get(Integer id) {
+        return postRepository.findById(id)
+                .filter(PostForum::getAtivo)
+                .orElseThrow(PostNotFoundException::new);
+    }
+
+    public void adminDelete(Integer id) {
+        PostForum post = get(id);
+        post.setAtivo(false);
+        postRepository.save(post);
+    }
 }

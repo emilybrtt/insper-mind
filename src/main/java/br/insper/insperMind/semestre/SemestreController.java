@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +18,7 @@ public class SemestreController {
     private SemestreService semestreService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseSemestreDTO save(@Valid @RequestBody SaveSemestreDTO dto)
     {
         return semestreService.save(dto);
@@ -33,11 +35,13 @@ public class SemestreController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseSemestreDTO edit(@PathVariable Integer id, @Valid @RequestBody EditSemestreDTO dto) {
         return semestreService.edit(id, dto);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable Integer id) {
         semestreService.delete(id);
     }

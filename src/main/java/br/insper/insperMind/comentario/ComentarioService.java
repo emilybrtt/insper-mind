@@ -163,4 +163,12 @@ public class ComentarioService {
             throw new ComentarioForbiddenException();
         }
     }
+
+    public void adminDelete(Integer id) {
+        Comentario comentario = get(id);
+        comentario.setAtivo(false);
+        comentarioRepository.save(comentario);
+    }
+
+
 }

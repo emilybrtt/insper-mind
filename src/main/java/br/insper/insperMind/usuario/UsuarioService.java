@@ -116,7 +116,7 @@ public class UsuarioService {
         if (!result.verified || !usuario.getAtivo()) {
             throw new UnauthorizedException();
         }
-        return jwtUtil.generateToken(usuario.getEmail(), usuario.getId());
+        return jwtUtil.generateToken(usuario.getEmail(), usuario.getId(), usuario.getRole());
     }
 
     public void validateOwner(Integer id, String emailUsuario) {
@@ -124,5 +124,12 @@ public class UsuarioService {
         if (!usuario.getEmail().equals(emailUsuario)) {
             throw new UnauthorizedException();
         }
+    }
+
+    public ResponseUsuarioDTO setAtivo(Integer id, Boolean ativo) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(UsuarioNotFoundException::new);
+        usuario.setAtivo(ativo);
+        return ResponseUsuarioDTO.toDTO(usuarioRepository.save(usuario));
     }
 }

@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,5 +67,11 @@ public class MaterialController {
                                              @RequestParam(required=false) String descricao){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return materialService.salvarArquivo(file, disciplinaId, email, titulo, descricao);
+    }
+
+    @DeleteMapping("/{id}/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void adminDelete(@PathVariable Integer id) {
+        materialService.adminDelete(id);
     }
 }

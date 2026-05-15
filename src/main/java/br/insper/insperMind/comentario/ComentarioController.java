@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,5 +55,11 @@ public class ComentarioController {
     public void deleteComentario(@PathVariable Integer id) {
         String emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
         comentarioService.delete(id, emailUsuario);
+    }
+
+    @DeleteMapping("/{id}/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void adminDelete(@PathVariable Integer id) {
+        comentarioService.adminDelete(id);
     }
 }
