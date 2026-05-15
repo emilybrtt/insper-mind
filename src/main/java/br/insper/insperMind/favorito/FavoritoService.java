@@ -44,50 +44,40 @@ public class FavoritoService {
         return ResponseFavoritoDTO.toDTO(get(id));
     }
 
-    public ResponseFavoritoDTO save(SaveFavoritoDTO dto) {
-        Usuario usuario = usuarioService.findByEmail(dto.getEmailUsuario());
-
-        TipoFavorito tipo = dto.getTipoItem();
-
-        if (tipo == null) {
-            throw new InvalidItemTypeException();
-        }
+    public ResponseFavoritoDTO save(SaveFavoritoDTO dto, String emailUsuario) {
+        Usuario usuario = usuarioService.findByEmail(emailUsuario);
 
         Favorito favorito = new Favorito();
         favorito.setUsuario(usuario);
-        favorito.setAtivo(true);
-        favorito.setMaterial(null);
-        favorito.setEletiva(null);
 
-        if (tipo == TipoFavorito.MATERIAL){
-            Material material = materialService.get(dto.getItemId());
-
-            boolean jaExiste = favoritoRepository
-                    .existsByUsuarioAndMaterialAndAtivoTrue(usuario, material);
-
-            if (jaExiste) {
-                throw new MaterialAlreadyFavoritedException();
+        if (dto.getMaterialId() != null) {
+            Material material = materialService.get(dto.getMaterialId());
+            if (favoritoRepository.existsByUsuarioAndMaterial(usuario, material)) {
+                throw new AlreadyFavoritedException("Material já foi favoritado");
             }
-
             favorito.setMaterial(material);
-            favorito.setEletiva(null);
-
-        } else if (tipo == TipoFavorito.ELETIVA){
-
-            Eletiva eletiva = eletivaService.get(dto.getItemId());
-
-            boolean jaExiste = favoritoRepository
-                    .existsByUsuarioAndEletivaAndAtivoTrue(usuario, eletiva);
-
-            if (jaExiste) {
-                throw new EletivaAlreadyFavoritedException();
-            }
-
-            favorito.setEletiva(eletiva);
-            favorito.setMaterial(null);
         }
 
-        return ResponseFavoritoDTO.toDTO(favoritoRepository.save(favorito));
+        if (dto.getEletivaId() != null) {
+            Eletiva eletiva = eletivaService.get(dto.getEletivaId());
+            if (favoritoRepository.existsByUsuarioAndEletiva(usuario, eletiva)) {
+                throw new AlreadyFavoritedException("Eletiva já foi favoritada");
+            }
+            favorito.setEletiva(eletiva);
+        }
+
+        favorito.setAtivo(true);
+        favorito = favoritoRepository.save(favorito);
+        return ResponseFavoritoDTO.toDTO(favorito);
+    }
+
+    public void delete(Integer id, String emailUsuario) {
+        Favorito favorito = get(id);
+        if (!favorito.getUsuario().getEmail().equals(emailUsuario)) {
+            throw new FavoritoForbiddenException();
+        }
+        favorito.setAtivo(false);
+        favoritoRepository.save(favorito);
     }
 
     public Page<ResponseFavoritoDTO> list(String emailUsuario, Pageable pageable) {
@@ -95,16 +85,5 @@ public class FavoritoService {
 
         return favoritoRepository.findByUsuarioAndAtivoTrue(usuario, pageable)
                 .map(ResponseFavoritoDTO::toDTO);
-    }
-
-    public void delete(Integer id, String emailUsuario) {
-        Favorito favorito = get(id);
-
-        if (!favorito.getUsuario().getEmail().equals(emailUsuario)) {
-            throw new FavoritoForbiddenException();
-        }
-
-        favorito.setAtivo(false);
-        favoritoRepository.save(favorito);
     }
 }

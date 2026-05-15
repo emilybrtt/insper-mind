@@ -1,10 +1,12 @@
 package br.insper.insperMind.usuario;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import br.insper.insperMind.common.JwtUtil;
 import br.insper.insperMind.usuario.dto.EditUsuarioDTO;
 import br.insper.insperMind.usuario.dto.LoginUsuarioDTO;
 import br.insper.insperMind.usuario.dto.ResponseUsuarioDTO;
 import br.insper.insperMind.usuario.dto.SaveUsuarioDTO;
+import br.insper.insperMind.usuario.exception.UnauthorizedException;
 import br.insper.insperMind.usuario.exception.UsuarioAlreadyExistsException;
 import br.insper.insperMind.usuario.exception.UsuarioNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,5 +104,15 @@ public class UsuarioService {
                 .verify(loginDTO.getSenha().toCharArray(), usuario.getSenha());
 
         return result.verified && usuario.getAtivo();
+    }
+
+    public String authenticateAndGenerateToken(LoginUsuarioDTO loginDTO) {
+        Usuario usuario = findByEmail(loginDTO.getEmail());
+        BCrypt.Result result = BCrypt.verifyer()
+                .verify(loginDTO.getSenha().toCharArray(), usuario.getSenha());
+        if (!result.verified || !usuario.getAtivo()) {
+            throw new UnauthorizedException();
+        }
+        return JwtUtil.generateToken(usuario.getEmail(), usuario.getId());
     }
 }

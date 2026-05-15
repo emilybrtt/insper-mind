@@ -12,6 +12,8 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -48,6 +50,20 @@ public class Material {
     @NotNull
     @Column(nullable = false)
     private Boolean ativo = true;
+
+    @Column(nullable = false)
+    private Integer curtidas = 0;
+
+    @Column(nullable = true)
+    private String arquivo;
+
+    @ManyToMany
+    @JoinTable(
+            name = "material_curtida",
+            joinColumns = @JoinColumn(name = "material_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
+    )
+    private List<Usuario> usuariosQueCurtiram = new ArrayList<>();
 
     public static Material toModel(SaveMaterialDTO dto, Usuario usuario, Disciplina disciplina) {
         Material material = new Material();
@@ -90,5 +106,18 @@ public class Material {
         if (disciplina != null) {
             this.disciplina = disciplina;
         }
+    }
+
+    public static Material criarDoArquivo(String nomeArquivo, Usuario usuario, Disciplina disciplina) {
+        Material material = new Material();
+        material.setTitulo(nomeArquivo);
+        material.setDescricao("");
+        material.setLink("");
+        material.setArquivo(nomeArquivo);
+        material.setTipo(TipoMaterial.OUTRO);
+        material.setUsuario(usuario);
+        material.setDisciplina(disciplina);
+        material.setAtivo(true);
+        return material;
     }
 }

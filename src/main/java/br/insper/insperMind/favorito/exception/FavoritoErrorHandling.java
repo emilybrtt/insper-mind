@@ -33,37 +33,19 @@ public class FavoritoErrorHandling {
 
     }
 
-    @ExceptionHandler(MaterialAlreadyFavoritedException.class)
+    @ExceptionHandler(AlreadyFavoritedException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
-    public ErrorDTO handleMaterialAlreadyFavoritedException(MaterialAlreadyFavoritedException ex,
+    public ErrorDTO handleAlreadyFavoritedException(AlreadyFavoritedException ex,
                                                             HttpServletRequest request) {
 
         log.error("Material já favoritado");
 
         ErrorDTO errorDTO =  new ErrorDTO();
-        errorDTO.setMensagem("Material já favoritado");
+        errorDTO.setMensagem("Item já favoritado");
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.CONFLICT.value());
-        errorDTO.setCodigoErro("MATERIAL_ALREADY_FAVORITED");
-        errorDTO.setPath(request.getRequestURI());
-        return  errorDTO;
-
-    }
-
-    @ExceptionHandler(EletivaAlreadyFavoritedException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ResponseBody
-    public ErrorDTO handleEletivaAlreadyFavoritedException(EletivaAlreadyFavoritedException ex,
-                                                            HttpServletRequest request) {
-
-        log.error("Eletiva já favoritado");
-
-        ErrorDTO errorDTO =  new ErrorDTO();
-        errorDTO.setMensagem("Eletiva já favoritada");
-        errorDTO.setData(LocalDateTime.now());
-        errorDTO.setCodigoHttp(HttpStatus.CONFLICT.value());
-        errorDTO.setCodigoErro("ELETIVA_ALREADY_FAVORITED");
+        errorDTO.setCodigoErro("ALREADY_FAVORITED");
         errorDTO.setPath(request.getRequestURI());
         return  errorDTO;
 

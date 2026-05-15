@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,18 +16,21 @@ public class FavoritoController {
     @Autowired
     private FavoritoService favoritoService;
 
-    @GetMapping
-    public Page<ResponseFavoritoDTO> listFavoritos(@RequestParam String emailUsuario, Pageable pageable) {
-        return favoritoService.list(emailUsuario, pageable);
+    @PostMapping
+    public ResponseFavoritoDTO save(@Valid @RequestBody SaveFavoritoDTO dto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return favoritoService.save(dto, email);
     }
 
-    @PostMapping
-    public ResponseFavoritoDTO saveFavorito(@Valid @RequestBody SaveFavoritoDTO dto){
-    return favoritoService.save(dto);
+    @GetMapping
+    public Page<ResponseFavoritoDTO> list(Pageable pageable) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return favoritoService.list(email, pageable);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFavorito(@PathVariable Integer id, @RequestParam String emailUsuario) {
-        favoritoService.delete(id, emailUsuario);
+    public void delete(@PathVariable Integer id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        favoritoService.delete(id, email);
     }
 }

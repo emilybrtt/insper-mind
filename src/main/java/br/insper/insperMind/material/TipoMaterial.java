@@ -6,5 +6,6 @@ public enum TipoMaterial {
     EXERCICIO_RESOLVIDO,
     LISTA,
     PDF,
-    LIVRO
+    LIVRO,
+    OUTRO
 }

@@ -1,9 +1,6 @@
 package br.insper.insperMind.usuario;
 
-import br.insper.insperMind.usuario.dto.EditUsuarioDTO;
-import br.insper.insperMind.usuario.dto.LoginUsuarioDTO;
-import br.insper.insperMind.usuario.dto.ResponseUsuarioDTO;
-import br.insper.insperMind.usuario.dto.SaveUsuarioDTO;
+import br.insper.insperMind.usuario.dto.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,14 +43,8 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginUsuarioDTO loginDTO) {
-        boolean isAuthenticated = usuarioService.authenticate(loginDTO);
-
-        if (isAuthenticated) {
-            return ResponseEntity.ok("Login bem-sucedido!");
-        }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Email ou senha inválidos.");
+    public ResponseEntity<TokenResponseDTO> login(@Valid @RequestBody LoginUsuarioDTO loginDTO) {
+        String token = usuarioService.authenticateAndGenerateToken(loginDTO);
+        return ResponseEntity.ok(new TokenResponseDTO(token));
     }
 }

@@ -1,19 +1,24 @@
 package br.insper.insperMind.material;
 
+import br.insper.insperMind.common.FileStorageService;
 import br.insper.insperMind.disciplina.Disciplina;
 import br.insper.insperMind.disciplina.DisciplinaService;
 import br.insper.insperMind.material.dto.EditMaterialDTO;
 import br.insper.insperMind.material.dto.ResponseMaterialDTO;
 import br.insper.insperMind.material.dto.SaveMaterialDTO;
+import br.insper.insperMind.material.exception.InvalidFileException;
 import br.insper.insperMind.material.exception.MaterialAlreadyExistsException;
 import br.insper.insperMind.material.exception.MaterialForbiddenException;
 import br.insper.insperMind.material.exception.MaterialNotFoundException;
 import br.insper.insperMind.usuario.Usuario;
+import br.insper.insperMind.usuario.UsuarioRepository;
 import br.insper.insperMind.usuario.UsuarioService;
+import br.insper.insperMind.usuario.exception.UsuarioNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class MaterialService {
@@ -25,7 +30,13 @@ public class MaterialService {
     private UsuarioService usuarioService;
 
     @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
     private DisciplinaService disciplinaService;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     public Material get(Integer id) {
         return materialRepository.findById(id)
@@ -56,24 +67,20 @@ public class MaterialService {
                 .map(ResponseMaterialDTO::toDTO);
     }
 
-    public Page<ResponseMaterialDTO> list(Integer disciplinaId, String emailUsuario, String tipo, Pageable pageable) {
+    public Page<ResponseMaterialDTO> list(Integer cursoId, Integer disciplinaId, String emailUsuario, String tipo, Pageable pageable) {
+        if (cursoId != null) {
+            return materialRepository.findByDisciplinaSemestreCursoIdAndTipo(cursoId, tipo, pageable)
+                    .map(ResponseMaterialDTO::toDTO);
+        }
         if (disciplinaId != null) {
-            return materialRepository.findByAtivoTrueAndDisciplinaId(disciplinaId, pageable)
+            return materialRepository.findByDisciplinaIdAndTipo(disciplinaId, tipo, pageable)
                     .map(ResponseMaterialDTO::toDTO);
         }
-
-        if (emailUsuario != null) {
-            return materialRepository.findByAtivoTrueAndUsuarioEmail(emailUsuario, pageable)
-                    .map(ResponseMaterialDTO::toDTO);
-        }
-
         if (tipo != null) {
-            TipoMaterial tipoMaterial = TipoMaterial.valueOf(tipo.toUpperCase());
-            return materialRepository.findByAtivoTrueAndTipo(tipoMaterial, pageable)
+            return materialRepository.findByTipo(tipo, pageable)
                     .map(ResponseMaterialDTO::toDTO);
         }
-
-        return list(pageable);
+        return materialRepository.findAll(pageable).map(ResponseMaterialDTO::toDTO);
     }
 
     public ResponseMaterialDTO edit(Integer id, EditMaterialDTO dto, String emailUsuario) {
@@ -103,5 +110,34 @@ public class MaterialService {
         if (!material.getUsuario().getEmail().equals(emailUsuario)) {
             throw new MaterialForbiddenException();
         }
+    }
+
+    public ResponseMaterialDTO curtir(Integer id, String emailUsuario) {
+        Material material = get(id);
+        Usuario usuario = usuarioRepository.findByEmail(emailUsuario)
+                .orElseThrow(UsuarioNotFoundException::new);
+
+        if (material.getUsuariosQueCurtiram().contains(usuario)) {
+            material.getUsuariosQueCurtiram().remove(usuario);
+            material.setCurtidas(material.getCurtidas() - 1);
+        } else {
+            material.getUsuariosQueCurtiram().add(usuario);
+            material.setCurtidas(material.getCurtidas() + 1);
+        }
+        material = materialRepository.save(material);
+        return ResponseMaterialDTO.toDTO(material);
+    }
+
+
+    public ResponseMaterialDTO salvarArquivo(MultipartFile file, Integer disciplinaId, String emailUsuario) {
+        if (file.isEmpty()) throw new InvalidFileException();
+
+        String nomeArquivo = fileStorageService.salvarArquivo(file);
+        Usuario usuario = usuarioService.findByEmail(emailUsuario);
+        Disciplina disciplina = disciplinaService.get(disciplinaId);
+
+        Material material = Material.criarDoArquivo(nomeArquivo, usuario, disciplina);
+        material = materialRepository.save(material);
+        return ResponseMaterialDTO.toDTO(material);
     }
 }

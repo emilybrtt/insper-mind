@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
 import jakarta.validation.ConstraintViolationException;
 import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.stream.LangCollectors.collect;
-
 @ControllerAdvice
 @Slf4j
 public class GlobalErrorHandling {
@@ -98,6 +96,23 @@ public class GlobalErrorHandling {
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.BAD_REQUEST.value());
         errorDTO.setCodigoErro("INPUT_ERROR");
+        errorDTO.setPath(request.getRequestURI());
+
+        return errorDTO;
+    }
+
+    @ExceptionHandler(FileSaveException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorDTO handleFileSaveException(
+            FileSaveException ex,
+            HttpServletRequest request) {
+
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem(ex.getMessage());
+        errorDTO.setData(LocalDateTime.now());
+        errorDTO.setCodigoHttp(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorDTO.setCodigoErro("FILE_SAVE_ERROR");
         errorDTO.setPath(request.getRequestURI());
 
         return errorDTO;

@@ -11,7 +11,9 @@ import br.insper.insperMind.disciplina.DisciplinaService;
 import br.insper.insperMind.material.Material;
 import br.insper.insperMind.material.MaterialService;
 import br.insper.insperMind.usuario.Usuario;
+import br.insper.insperMind.usuario.UsuarioRepository;
 import br.insper.insperMind.usuario.UsuarioService;
+import br.insper.insperMind.usuario.exception.UsuarioNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +30,9 @@ public class ComentarioService {
 
     @Autowired
     private DisciplinaService disciplinaService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private MaterialService materialService;
@@ -129,16 +134,19 @@ public class ComentarioService {
         return ResponseComentarioDTO.toDTO(comentario);
     }
 
-    public ResponseComentarioDTO curtir(Integer id) {
+    public ResponseComentarioDTO curtir(Integer id, String emailUsuario) {
         Comentario comentario = get(id);
+        Usuario usuario = usuarioRepository.findByEmail(emailUsuario)
+                .orElseThrow(UsuarioNotFoundException::new);
 
-        if (comentario.getCurtidas() == null) {
-            comentario.setCurtidas(0);
+        if (comentario.getUsuariosQueCurtiram().contains(usuario)) {
+            comentario.getUsuariosQueCurtiram().remove(usuario);
+            comentario.setCurtidas(comentario.getCurtidas() - 1);
+        } else {
+            comentario.getUsuariosQueCurtiram().add(usuario);
+            comentario.setCurtidas(comentario.getCurtidas() + 1);
         }
-
-        comentario.setCurtidas(comentario.getCurtidas() + 1);
         comentario = comentarioRepository.save(comentario);
-
         return ResponseComentarioDTO.toDTO(comentario);
     }
 

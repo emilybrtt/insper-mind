@@ -1,6 +1,7 @@
 package br.insper.insperMind.favorito;
 
 import br.insper.insperMind.eletiva.Eletiva;
+import br.insper.insperMind.favorito.dto.SaveFavoritoDTO;
 import br.insper.insperMind.material.Material;
 import br.insper.insperMind.usuario.Usuario;
 import jakarta.persistence.*;
@@ -38,4 +39,6 @@ public class Favorito {
 
     @CreationTimestamp
     private LocalDateTime dataSalvo;
+
+
 }

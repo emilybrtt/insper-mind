@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -51,4 +52,13 @@ public class Comentario {
 
     @OneToMany(mappedBy = "comentarioPai")
     private List<Comentario> respostas;
+
+    @ManyToMany
+    @JoinTable(
+            name = "comentario_curtida",
+            joinColumns = @JoinColumn(name = "comentario_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
+    )
+    private List<Usuario> usuariosQueCurtiram = new ArrayList<>();
+
 }
