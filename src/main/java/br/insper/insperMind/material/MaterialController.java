@@ -65,6 +65,6 @@ public class MaterialController {
                                              @RequestParam(required=false) String titulo,
                                              @RequestParam(required=false) String descricao){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return materialService.salvarArquivo(file, disciplinaId, email);
+        return materialService.salvarArquivo(file, disciplinaId, email, titulo, descricao);
     }
 }

@@ -6,10 +6,7 @@ import br.insper.insperMind.disciplina.DisciplinaService;
 import br.insper.insperMind.material.dto.EditMaterialDTO;
 import br.insper.insperMind.material.dto.ResponseMaterialDTO;
 import br.insper.insperMind.material.dto.SaveMaterialDTO;
-import br.insper.insperMind.material.exception.InvalidFileException;
-import br.insper.insperMind.material.exception.MaterialAlreadyExistsException;
-import br.insper.insperMind.material.exception.MaterialForbiddenException;
-import br.insper.insperMind.material.exception.MaterialNotFoundException;
+import br.insper.insperMind.material.exception.*;
 import br.insper.insperMind.usuario.Usuario;
 import br.insper.insperMind.usuario.UsuarioRepository;
 import br.insper.insperMind.usuario.UsuarioService;
@@ -64,8 +61,18 @@ public class MaterialService {
 
     public Page<ResponseMaterialDTO> list(Integer cursoId, Integer disciplinaId, String emailUsuario, String tipo, Pageable pageable) {
 
-        TipoMaterial tipoEnum = (tipo != null) ? TipoMaterial.valueOf(tipo.toUpperCase()) : null;
-
+        if (emailUsuario != null) {
+            return materialRepository.findByUsuarioEmailAndAtivoTrue(emailUsuario, pageable)
+                    .map(ResponseMaterialDTO::toDTO);
+        }
+        TipoMaterial tipoEnum = null;
+        if (tipo != null) {
+            try {
+                tipoEnum = TipoMaterial.valueOf(tipo.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new MaterialInvalidTypeException();
+            }
+        }
         if (cursoId != null) {
             return materialRepository.findByDisciplinaSemestreCursoIdAndTipo(cursoId, tipoEnum, pageable)
                     .map(ResponseMaterialDTO::toDTO);
@@ -76,11 +83,6 @@ public class MaterialService {
         }
         if (tipoEnum != null) {
             return materialRepository.findByTipo(tipoEnum, pageable)
-                    .map(ResponseMaterialDTO::toDTO);
-        }
-
-        if (emailUsuario != null) {
-            return materialRepository.findByUsuarioEmailAndAtivoTrue(emailUsuario, pageable)
                     .map(ResponseMaterialDTO::toDTO);
         }
 
@@ -133,14 +135,18 @@ public class MaterialService {
     }
 
 
-    public ResponseMaterialDTO salvarArquivo(MultipartFile file, Integer disciplinaId, String emailUsuario) {
+    public ResponseMaterialDTO salvarArquivo(MultipartFile file, Integer disciplinaId,
+                                             String emailUsuario, String titulo, String descricao) {
         if (file.isEmpty()) throw new InvalidFileException();
 
         String nomeArquivo = fileStorageService.salvarArquivo(file);
         Usuario usuario = usuarioService.findByEmail(emailUsuario);
         Disciplina disciplina = disciplinaService.get(disciplinaId);
 
+
         Material material = Material.criarDoArquivo(nomeArquivo, usuario, disciplina);
+        material.setTitulo(titulo != null ? titulo : nomeArquivo);
+        material.setDescricao(descricao != null ? descricao : "");
         material = materialRepository.save(material);
         return ResponseMaterialDTO.toDTO(material);
     }
