@@ -31,13 +31,16 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null
   
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...fetchOptions.headers,
   }
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`
+  }
+
+  if (fetchOptions.headers) {
+    Object.assign(headers, fetchOptions.headers)
   }
 
   const response = await fetch(url, {
