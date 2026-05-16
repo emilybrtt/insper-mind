@@ -56,7 +56,6 @@ public class Usuario {
     public static Usuario toModel(SaveUsuarioDTO dto) {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.getNome());
-        usuario.setRole(Role.USER);
         usuario.setEmail(dto.getEmail());
         usuario.setSenha(dto.getSenha());
         usuario.setAtivo(true);

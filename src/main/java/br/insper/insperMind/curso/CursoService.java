@@ -54,7 +54,7 @@ public class CursoService {
         Curso curso = get(id);
 
         if (dto.getNome() != null) {
-            if (cursoRepository.existsByNomeAndAtivoTrue(dto.getNome())) {
+            if (!dto.getNome().equals(curso.getNome()) && cursoRepository.existsByNomeAndAtivoTrue(dto.getNome())) {
                 throw new CursoAlreadyExistsException();
             }
             curso.setNome(dto.getNome());

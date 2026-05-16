@@ -1,5 +1,6 @@
 package br.insper.insperMind.eletiva.dto;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -12,9 +13,11 @@ import java.util.List;
 public class SaveEletivaDTO {
 
     @NotNull(message = "Carga horaria é obrigatória")
+    @Min(value = 1, message = "Carga horária deve ser maior que 0")
     private Integer cargaHoraria;
 
-    @NotBlank(message = "Semestre minimo é obrigatório")
+    @NotNull(message = "Semestre minimo é obrigatório")
+    @Min(value = 1, message = "Semestre mínimo deve ser maior que 0")
     private Integer semestreMinimo;
 
     @NotBlank(message = "Nome da eletiva é obrigatório")

@@ -141,7 +141,7 @@ public class ComentarioService {
 
         if (comentario.getUsuariosQueCurtiram().contains(usuario)) {
             comentario.getUsuariosQueCurtiram().remove(usuario);
-            comentario.setCurtidas(comentario.getCurtidas() - 1);
+            comentario.setCurtidas(Math.max(0, comentario.getCurtidas() - 1));
         } else {
             comentario.getUsuariosQueCurtiram().add(usuario);
             comentario.setCurtidas(comentario.getCurtidas() + 1);

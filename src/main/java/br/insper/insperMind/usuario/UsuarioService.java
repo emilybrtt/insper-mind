@@ -9,9 +9,11 @@ import br.insper.insperMind.usuario.dto.SaveUsuarioDTO;
 import br.insper.insperMind.usuario.exception.UnauthorizedException;
 import br.insper.insperMind.usuario.exception.UsuarioAlreadyExistsException;
 import br.insper.insperMind.usuario.exception.UsuarioNotFoundException;
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -120,6 +122,10 @@ public class UsuarioService {
     }
 
     public void validateOwner(Integer id, String emailUsuario) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            return;
+        }
         Usuario usuario = get(id);
         if (!usuario.getEmail().equals(emailUsuario)) {
             throw new UnauthorizedException();

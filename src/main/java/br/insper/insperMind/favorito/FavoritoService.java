@@ -45,7 +45,12 @@ public class FavoritoService {
     }
 
     public ResponseFavoritoDTO save(SaveFavoritoDTO dto, String emailUsuario) {
-        if (dto.getMaterialId() == null && dto.getEletivaId() == null) {
+        boolean hasMaterial = dto.getMaterialId() != null;
+        boolean hasEletiva = dto.getEletivaId() != null;
+        if (!hasMaterial && !hasEletiva) {
+            throw new InvalidItemTypeException();
+        }
+        if (hasMaterial && hasEletiva) {
             throw new InvalidItemTypeException();
         }
         Usuario usuario = usuarioService.findByEmail(emailUsuario);

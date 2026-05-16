@@ -29,6 +29,7 @@ public class UsuarioController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseUsuarioDTO saveUsuario(@Valid @RequestBody SaveUsuarioDTO dto) {
         return usuarioService.save(dto);
     }
@@ -61,7 +62,7 @@ public class UsuarioController {
     @PatchMapping("/{id}/ativo")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseUsuarioDTO setAtivo(@PathVariable Integer id,
-                                       @RequestParam Boolean ativo) {
-        return usuarioService.setAtivo(id, ativo);
+                                       @RequestBody @Valid SetAtivoDTO dto) {
+        return usuarioService.setAtivo(id, dto.getAtivo());
     }
 }

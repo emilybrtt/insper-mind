@@ -7,7 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,7 @@ public class PostForumController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponsePostForumDTO save(@Valid @RequestBody SavePostForumDTO dto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return postService.save(dto, email);
@@ -48,13 +51,13 @@ public class PostForumController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        postService.delete(id, email);
-    }
-
-    @DeleteMapping("/{id}/admin")
-    @PreAuthorize("hasRole('ADMIN')")
-    public void adminDelete(@PathVariable Integer id) {
-        postService.adminDelete(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        if (isAdmin) {
+            postService.adminDelete(id);
+        } else {
+            postService.delete(id, auth.getName());
+        }
     }
 }

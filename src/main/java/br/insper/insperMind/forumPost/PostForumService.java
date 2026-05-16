@@ -6,6 +6,7 @@ import br.insper.insperMind.forumPost.dto.ResponsePostForumDTO;
 import br.insper.insperMind.usuario.Usuario;
 import br.insper.insperMind.usuario.UsuarioRepository;
 import br.insper.insperMind.usuario.UsuarioService;
+import br.insper.insperMind.usuario.exception.UsuarioNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -81,10 +82,10 @@ public class PostForumService {
                 .filter(PostForum::getAtivo)
                 .orElseThrow(PostNotFoundException::new);
         Usuario usuario = usuarioRepository.findByEmail(emailUsuario)
-                .orElseThrow();
+                .orElseThrow(UsuarioNotFoundException::new);
         if (post.getUsuariosQueCurtiram().contains(usuario)) {
             post.getUsuariosQueCurtiram().remove(usuario);
-            post.setCurtidas(post.getCurtidas() - 1);
+            post.setCurtidas(Math.max(0, post.getCurtidas() - 1));
         } else {
             post.getUsuariosQueCurtiram().add(usuario);
             post.setCurtidas(post.getCurtidas() + 1);

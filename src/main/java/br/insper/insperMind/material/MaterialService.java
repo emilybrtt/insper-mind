@@ -27,9 +27,6 @@ public class MaterialService {
     private UsuarioService usuarioService;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private DisciplinaService disciplinaService;
 
     @Autowired
@@ -86,7 +83,7 @@ public class MaterialService {
                     .map(ResponseMaterialDTO::toDTO);
         }
 
-        return materialRepository.findAll(pageable).map(ResponseMaterialDTO::toDTO);
+        return materialRepository.findByAtivoTrue(pageable).map(ResponseMaterialDTO::toDTO);
     }
 
     public ResponseMaterialDTO edit(Integer id, EditMaterialDTO dto, String emailUsuario) {
@@ -120,8 +117,7 @@ public class MaterialService {
 
     public ResponseMaterialDTO curtir(Integer id, String emailUsuario) {
         Material material = get(id);
-        Usuario usuario = usuarioRepository.findByEmail(emailUsuario)
-                .orElseThrow(UsuarioNotFoundException::new);
+        Usuario usuario = usuarioService.findByEmail(emailUsuario);
 
         if (material.getUsuariosQueCurtiram().contains(usuario)) {
             material.getUsuariosQueCurtiram().remove(usuario);

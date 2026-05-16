@@ -7,7 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +35,7 @@ public class ComentarioController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseComentarioDTO saveComentario(@Valid @RequestBody SaveComentarioDTO dto) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return comentarioService.save(dto, email);
@@ -40,7 +43,7 @@ public class ComentarioController {
 
     @PutMapping("/{id}")
     public ResponseComentarioDTO editComentario(@PathVariable Integer id,
-                                                @RequestBody EditComentarioDTO dto) {
+                                                @Valid @RequestBody EditComentarioDTO dto) {
         String emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
         return comentarioService.edit(id, dto, emailUsuario);
     }
@@ -52,14 +55,14 @@ public class ComentarioController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteComentario(@PathVariable Integer id) {
-        String emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
-        comentarioService.delete(id, emailUsuario);
-    }
-
-    @DeleteMapping("/{id}/admin")
-    @PreAuthorize("hasRole('ADMIN')")
-    public void adminDelete(@PathVariable Integer id) {
-        comentarioService.adminDelete(id);
+    public void delete(@PathVariable Integer id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        if (isAdmin) {
+            comentarioService.adminDelete(id);
+        } else {
+            comentarioService.delete(id, auth.getName());
+        }
     }
 }
