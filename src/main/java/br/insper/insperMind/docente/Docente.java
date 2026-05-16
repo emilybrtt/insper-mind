@@ -1,4 +1,5 @@
 package br.insper.insperMind.docente;
+
 import br.insper.insperMind.disciplina.Disciplina;
 import br.insper.insperMind.docente.dto.SaveDocenteDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,8 +30,8 @@ public class Docente {
     private String email;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "docente")
-    private List<Disciplina> disciplinas;
+    @ManyToMany(mappedBy = "docentes")
+    private List<Disciplina> disciplinas = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime dataCriacao;
@@ -45,6 +47,7 @@ public class Docente {
         Docente docente = new Docente();
         docente.setNome(dto.getNome());
         docente.setEmail(dto.getEmail());
+        docente.setAtivo(true);
         return docente;
     }
 }

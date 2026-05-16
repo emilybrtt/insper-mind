@@ -3,9 +3,14 @@ package br.insper.insperMind.comentario;
 import br.insper.insperMind.comentario.dto.EditComentarioDTO;
 import br.insper.insperMind.comentario.dto.ResponseComentarioDTO;
 import br.insper.insperMind.comentario.dto.SaveComentarioDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,28 +21,48 @@ public class ComentarioController {
     private ComentarioService comentarioService;
 
     @GetMapping
-    public Page<ResponseComentarioDTO> listComentarios(Pageable pageable) {
-        return comentarioService.list(pageable);
+    public Page<ResponseComentarioDTO> listComentarios(
+            @RequestParam(required = false) Integer idDisciplina,
+            @RequestParam(required = false) Integer idMaterial,
+            @RequestParam(required = false) Integer comentarioPaiId,
+            Pageable pageable) {
+        return comentarioService.list(idDisciplina, idMaterial, comentarioPaiId, pageable);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseComentarioDTO getComentario(@PathVariable Integer id) {
+        return comentarioService.getDTO(id);
     }
 
     @PostMapping
-    public ResponseComentarioDTO saveComentario(@RequestBody SaveComentarioDTO dto) {
-        return comentarioService.save(dto);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseComentarioDTO saveComentario(@Valid @RequestBody SaveComentarioDTO dto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return comentarioService.save(dto, email);
     }
 
     @PutMapping("/{id}")
     public ResponseComentarioDTO editComentario(@PathVariable Integer id,
-                                                @RequestBody EditComentarioDTO dto) {
-        return comentarioService.edit(id, dto);
+                                                @Valid @RequestBody EditComentarioDTO dto) {
+        String emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
+        return comentarioService.edit(id, dto, emailUsuario);
     }
 
     @PatchMapping("/{id}/curtir")
     public ResponseComentarioDTO curtirComentario(@PathVariable Integer id) {
-        return comentarioService.curtir(id);
+        String emailUsuario = SecurityContextHolder.getContext().getAuthentication().getName();
+        return comentarioService.curtir(id, emailUsuario);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteComentario(@PathVariable Integer id) {
-        comentarioService.delete(id);
+    public void delete(@PathVariable Integer id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        if (isAdmin) {
+            comentarioService.adminDelete(id);
+        } else {
+            comentarioService.delete(id, auth.getName());
+        }
     }
 }

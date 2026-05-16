@@ -1,10 +1,12 @@
 package br.insper.insperMind.disciplina.dto;
 
 import br.insper.insperMind.disciplina.Disciplina;
+import br.insper.insperMind.docente.dto.DocenteResumoDTO;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,6 +23,8 @@ public class ResponseDisciplinaDTO {
     private Integer cursoId;
     private String nomeCurso;
 
+    private List<DocenteResumoDTO> docentes;
+
     public static ResponseDisciplinaDTO toDTO(Disciplina disciplina) {
         ResponseDisciplinaDTO dto = new ResponseDisciplinaDTO();
 
@@ -30,13 +34,23 @@ public class ResponseDisciplinaDTO {
         dto.setFormulaAvaliacao(disciplina.getFormulaAvaliacao());
         dto.setTemDelta(disciplina.getTemDelta());
         dto.setCriterioBarreira(disciplina.getCriterioBarreira());
+
         if (disciplina.getSemestre() != null) {
             dto.setSemestreId(disciplina.getSemestre().getId());
             dto.setNomeSemestre(disciplina.getSemestre().getNome());
+
             if (disciplina.getSemestre().getCurso() != null) {
                 dto.setCursoId(disciplina.getSemestre().getCurso().getId());
                 dto.setNomeCurso(disciplina.getSemestre().getCurso().getNome());
             }
+        }
+
+        if (disciplina.getDocentes() != null) {
+            dto.setDocentes(
+                    disciplina.getDocentes().stream()
+                            .map(DocenteResumoDTO::toDTO)
+                            .toList()
+            );
         }
 
         return dto;

@@ -27,7 +27,7 @@ public class SemestreErrorHandling {
         errorDTO.setMensagem("Semestre nao encontrado");
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.NOT_FOUND.value());
-        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setCodigoErro("SEMESTRE_NOT_FOUND");
         errorDTO.setPath(request.getRequestURI());
         return  errorDTO;
 
@@ -43,7 +43,7 @@ public class SemestreErrorHandling {
         errorDTO.setMensagem("Semestre já cadastrado");
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.CONFLICT.value());
-        errorDTO.setCodigoErro("CURSO_ALREADY_EXISTS");
+        errorDTO.setCodigoErro("SEMESTRE_ALREADY_EXISTS");
         errorDTO.setPath(request.getRequestURI());
         return  errorDTO;
 

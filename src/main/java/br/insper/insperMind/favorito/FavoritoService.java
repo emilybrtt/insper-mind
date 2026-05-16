@@ -4,13 +4,9 @@ import br.insper.insperMind.eletiva.Eletiva;
 import br.insper.insperMind.eletiva.EletivaService;
 import br.insper.insperMind.favorito.dto.ResponseFavoritoDTO;
 import br.insper.insperMind.favorito.dto.SaveFavoritoDTO;
-import br.insper.insperMind.favorito.exception.EletivaAlreadyFavoritedException;
-import br.insper.insperMind.favorito.exception.FavoritoNotFoundException;
-import br.insper.insperMind.favorito.exception.InvalidItemTypeException;
-import br.insper.insperMind.favorito.exception.MaterialAlreadyFavoritedException;
+import br.insper.insperMind.favorito.exception.*;
 import br.insper.insperMind.material.Material;
 import br.insper.insperMind.material.MaterialService;
-import br.insper.insperMind.material.exception.MaterialAlreadyExistsException;
 import br.insper.insperMind.usuario.Usuario;
 import br.insper.insperMind.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +16,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class FavoritoService {
-
-    private static final String TIPO_MATERIAL = "material";
-    private static final String TIPO_ELETIVA = "eletiva";
 
     @Autowired
     private FavoritoRepository favoritoRepository;
@@ -38,7 +31,7 @@ public class FavoritoService {
 
     public Favorito get(Integer id) {
         Favorito favorito = favoritoRepository.findById(id)
-                .orElseThrow(() -> new FavoritoNotFoundException());
+                .orElseThrow(FavoritoNotFoundException::new);
 
         if (!favorito.getAtivo()) {
             throw new FavoritoNotFoundException();
@@ -51,68 +44,62 @@ public class FavoritoService {
         return ResponseFavoritoDTO.toDTO(get(id));
     }
 
-    public ResponseFavoritoDTO save(SaveFavoritoDTO dto) {
-        Usuario usuario = usuarioService.findByEmail(dto.getEmailUsuario());
-
-        String tipo = dto.getTipoItem();
-
-        // validação básica
-        if (!TIPO_MATERIAL.equalsIgnoreCase(tipo) &&
-                !TIPO_ELETIVA.equalsIgnoreCase(tipo)) {
+    public ResponseFavoritoDTO save(SaveFavoritoDTO dto, String emailUsuario) {
+        boolean hasMaterial = dto.getMaterialId() != null;
+        boolean hasEletiva = dto.getEletivaId() != null;
+        if (!hasMaterial && !hasEletiva) {
             throw new InvalidItemTypeException();
         }
+        if (hasMaterial && hasEletiva) {
+            throw new InvalidItemTypeException();
+        }
+        Usuario usuario = usuarioService.findByEmail(emailUsuario);
 
         Favorito favorito = new Favorito();
         favorito.setUsuario(usuario);
-        favorito.setAtivo(true);
 
-        if (TIPO_MATERIAL.equalsIgnoreCase(tipo)) {
-
-            Material material = materialService.get(dto.getItemId());
-
-            boolean jaExiste = favoritoRepository
-                    .existsByUsuarioAndMaterialAndAtivoTrue(usuario, material);
-
-            if (jaExiste) {
-                throw new MaterialAlreadyFavoritedException();
+        if (dto.getMaterialId() != null) {
+            Material material = materialService.get(dto.getMaterialId());
+            if (favoritoRepository.existsByUsuarioAndMaterial(usuario, material)) {
+                throw new AlreadyFavoritedException("Material já foi favoritado");
             }
-
             favorito.setMaterial(material);
-            favorito.setEletiva(null);
-
-        } else {
-
-            Eletiva eletiva = eletivaService.get(dto.getItemId());
-
-            boolean jaExiste = favoritoRepository
-                    .existsByUsuarioAndEletivaAndAtivoTrue(usuario, eletiva);
-
-            if (jaExiste) {
-                throw new EletivaAlreadyFavoritedException();
-            }
-
-            favorito.setEletiva(eletiva);
-            favorito.setMaterial(null);
         }
 
-        return ResponseFavoritoDTO.toDTO(favoritoRepository.save(favorito));
-    }
+        if (dto.getEletivaId() != null) {
+            Eletiva eletiva = eletivaService.get(dto.getEletivaId());
+            if (favoritoRepository.existsByUsuarioAndEletiva(usuario, eletiva)) {
+                throw new AlreadyFavoritedException("Eletiva já foi favoritada");
+            }
+            favorito.setEletiva(eletiva);
+        }
 
-    public Page<ResponseFavoritoDTO> list(String emailUsuario, Pageable pageable) {
-        Usuario usuario = usuarioService.findByEmail(emailUsuario);
-
-        return favoritoRepository.findByUsuarioAndAtivoTrue(usuario, pageable)
-                .map(ResponseFavoritoDTO::toDTO);
+        favorito.setAtivo(true);
+        favorito = favoritoRepository.save(favorito);
+        return ResponseFavoritoDTO.toDTO(favorito);
     }
 
     public void delete(Integer id, String emailUsuario) {
         Favorito favorito = get(id);
-
         if (!favorito.getUsuario().getEmail().equals(emailUsuario)) {
-            throw new RuntimeException("Você não tem permissão para deletar este favorito");
+            throw new FavoritoForbiddenException();
         }
-
         favorito.setAtivo(false);
         favoritoRepository.save(favorito);
+    }
+
+    public Page<ResponseFavoritoDTO> list(String emailUsuario, TipoFavorito tipo, Pageable pageable) {
+        Usuario usuario = usuarioService.findByEmail(emailUsuario);
+
+        if (tipo == TipoFavorito.MATERIAL) {
+            return favoritoRepository.findByUsuarioAndAtivoTrueAndMaterialIsNotNull(usuario, pageable)
+                    .map(ResponseFavoritoDTO::toDTO);
+        }
+        if (tipo == TipoFavorito.ELETIVA) {
+            return favoritoRepository.findByUsuarioAndAtivoTrueAndEletivaIsNotNull(usuario, pageable)
+                    .map(ResponseFavoritoDTO::toDTO);
+        }
+        return favoritoRepository.findByUsuarioAndAtivoTrue(usuario, pageable)
+                .map(ResponseFavoritoDTO::toDTO);
     }
 }

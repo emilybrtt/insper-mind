@@ -2,13 +2,18 @@ package br.insper.insperMind.comentario;
 
 import br.insper.insperMind.comentario.dto.SaveComentarioDTO;
 import br.insper.insperMind.disciplina.Disciplina;
+import br.insper.insperMind.material.Material;
 import br.insper.insperMind.usuario.Usuario;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +25,8 @@ public class Comentario {
     private Integer id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Comentário não pode ser vazio")
+    @Size(max = 2000, message = "Comentário deve ter no máximo 2000 caracteres")
     private String comentario;
 
     @Column(nullable = false)
@@ -39,13 +46,23 @@ public class Comentario {
     @CreationTimestamp
     private LocalDateTime dataCriacao;
 
-    public static Comentario toModel(SaveComentarioDTO dto, Usuario usuario, Disciplina disciplina) {
-        Comentario comentario = new Comentario();
-        comentario.setComentario(dto.getComentario());
-        comentario.setCurtidas(0);
-        comentario.setUsuario(usuario);
-        comentario.setDisciplina(disciplina);
-        comentario.setAtivo(true);
-        return comentario;
-    }
+    @ManyToOne
+    @JoinColumn(name = "id_material")
+    private Material material;
+
+    @ManyToOne
+    @JoinColumn(name = "id_comentario_pai")
+    private Comentario comentarioPai;
+
+    @OneToMany(mappedBy = "comentarioPai")
+    private List<Comentario> respostas;
+
+    @ManyToMany
+    @JoinTable(
+            name = "comentario_curtida",
+            joinColumns = @JoinColumn(name = "comentario_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
+    )
+    private List<Usuario> usuariosQueCurtiram = new ArrayList<>();
+
 }

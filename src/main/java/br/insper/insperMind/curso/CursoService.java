@@ -18,7 +18,7 @@ public class CursoService {
 
     public Curso get(Integer id) {
         Curso curso = cursoRepository.findById(id)
-                .orElseThrow(() -> new CursoNotFoundException());
+                .orElseThrow(CursoNotFoundException::new);
 
         if (!curso.getAtivo()) {
             throw new CursoNotFoundException();
@@ -32,7 +32,7 @@ public class CursoService {
     }
 
     public ResponseCursoDTO save(SaveCursoDTO dto) {
-        if (cursoRepository.existsByNome(dto.getNome())) {
+        if (cursoRepository.existsByNomeAndAtivoTrue(dto.getNome())) {
             throw new CursoAlreadyExistsException();
         }
 
@@ -54,6 +54,9 @@ public class CursoService {
         Curso curso = get(id);
 
         if (dto.getNome() != null) {
+            if (!dto.getNome().equals(curso.getNome()) && cursoRepository.existsByNomeAndAtivoTrue(dto.getNome())) {
+                throw new CursoAlreadyExistsException();
+            }
             curso.setNome(dto.getNome());
         }
 
@@ -62,7 +65,6 @@ public class CursoService {
         }
 
         curso = cursoRepository.save(curso);
-
         return ResponseCursoDTO.toDTO(curso);
     }
 

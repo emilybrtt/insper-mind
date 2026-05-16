@@ -19,18 +19,16 @@ public class UsuarioErrorHandling {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorDTO handleUsuarioNotFoundException(UsuarioNotFoundException ex,
-                                                 HttpServletRequest request) {
+                                                   HttpServletRequest request) {
+        log.error("Usuario nao encontrado", ex);
 
-        log.error("Usuario nao encontrado");
-
-        ErrorDTO errorDTO =  new ErrorDTO();
-        errorDTO.setMensagem("Usuario nao encontrado");
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem(ex.getMessage());
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.NOT_FOUND.value());
-        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setCodigoErro("USER_NOT_FOUND");
         errorDTO.setPath(request.getRequestURI());
-        return  errorDTO;
-
+        return errorDTO;
     }
 
     @ExceptionHandler(UsuarioAlreadyExistsException.class)
@@ -38,16 +36,27 @@ public class UsuarioErrorHandling {
     @ResponseBody
     public ErrorDTO handleUsuarioAlreadyExistsException(UsuarioAlreadyExistsException ex,
                                                         HttpServletRequest request) {
+        log.error("Usuario já cadastrado", ex);
 
-        ErrorDTO errorDTO =  new ErrorDTO();
-        errorDTO.setMensagem("Usuario já cadastrado");
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem(ex.getMessage());
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.CONFLICT.value());
-        errorDTO.setCodigoErro("CURSO_ALREADY_EXISTS");
+        errorDTO.setCodigoErro("USER_ALREADY_EXISTS");
         errorDTO.setPath(request.getRequestURI());
-        return  errorDTO;
-
+        return errorDTO;
     }
 
-
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ErrorDTO handleUnauthorizedException(UnauthorizedException ex, HttpServletRequest request) {
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem(ex.getMessage());
+        errorDTO.setData(LocalDateTime.now());
+        errorDTO.setCodigoHttp(HttpStatus.UNAUTHORIZED.value());
+        errorDTO.setCodigoErro("UNAUTHORIZED");
+        errorDTO.setPath(request.getRequestURI());
+        return errorDTO;
+    }
 }

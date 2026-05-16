@@ -27,43 +27,25 @@ public class FavoritoErrorHandling {
         errorDTO.setMensagem("Favorito nao encontrado");
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.NOT_FOUND.value());
-        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setCodigoErro("FAVORITO_NOT_FOUND");
         errorDTO.setPath(request.getRequestURI());
         return  errorDTO;
 
     }
 
-    @ExceptionHandler(MaterialAlreadyFavoritedException.class)
+    @ExceptionHandler(AlreadyFavoritedException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
-    public ErrorDTO handleMaterialAlreadyFavoritedException(MaterialAlreadyFavoritedException ex,
+    public ErrorDTO handleAlreadyFavoritedException(AlreadyFavoritedException ex,
                                                             HttpServletRequest request) {
 
         log.error("Material já favoritado");
 
         ErrorDTO errorDTO =  new ErrorDTO();
-        errorDTO.setMensagem("Material já favoritado");
+        errorDTO.setMensagem("Item já favoritado");
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.CONFLICT.value());
-        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
-        errorDTO.setPath(request.getRequestURI());
-        return  errorDTO;
-
-    }
-
-    @ExceptionHandler(EletivaAlreadyFavoritedException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ResponseBody
-    public ErrorDTO handleEletivaAlreadyFavoritedException(EletivaAlreadyFavoritedException ex,
-                                                            HttpServletRequest request) {
-
-        log.error("Eletiva já favoritado");
-
-        ErrorDTO errorDTO =  new ErrorDTO();
-        errorDTO.setMensagem("Eletiva já favoritada");
-        errorDTO.setData(LocalDateTime.now());
-        errorDTO.setCodigoHttp(HttpStatus.CONFLICT.value());
-        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setCodigoErro("ALREADY_FAVORITED");
         errorDTO.setPath(request.getRequestURI());
         return  errorDTO;
 
@@ -81,10 +63,24 @@ public class FavoritoErrorHandling {
         errorDTO.setMensagem("Esse item não existe");
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.BAD_REQUEST.value());
-        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setCodigoErro("INVALID_ITEM_TYPE");
         errorDTO.setPath(request.getRequestURI());
         return  errorDTO;
 
     }
 
+    @ExceptionHandler(FavoritoForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorDTO handleFavoritoForbiddenException(FavoritoForbiddenException ex,
+                                                     HttpServletRequest request) {
+
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem(ex.getMessage());
+        errorDTO.setData(LocalDateTime.now());
+        errorDTO.setCodigoHttp(HttpStatus.FORBIDDEN.value());
+        errorDTO.setCodigoErro("FAVORITO_FORBIDDEN");
+        errorDTO.setPath(request.getRequestURI());
+        return errorDTO;
+    }
 }

@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CursoRepository extends JpaRepository<Curso, Integer> {
     boolean existsByNome(String nome);
     Page<Curso> findByAtivoTrue(Pageable pageable);
+    boolean existsByNomeAndAtivoTrue(String nome);
 }

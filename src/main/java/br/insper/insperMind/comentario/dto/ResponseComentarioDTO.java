@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,6 +16,14 @@ public class ResponseComentarioDTO {
     private String nomeUsuario;
     private String emailUsuario;
     private LocalDateTime dataCriacao;
+
+    private Integer idDisciplina;
+    private String nomeDisciplina;
+
+    private Integer idMaterial;
+    private String tituloMaterial;
+
+    private Integer comentarioPaiId;
 
     public static ResponseComentarioDTO toDTO(Comentario comentario) {
         ResponseComentarioDTO dto = new ResponseComentarioDTO();
@@ -28,6 +37,19 @@ public class ResponseComentarioDTO {
             dto.setEmailUsuario(comentario.getUsuario().getEmail());
         }
 
+        if (comentario.getDisciplina() != null) {
+            dto.setIdDisciplina(comentario.getDisciplina().getId());
+            dto.setNomeDisciplina(comentario.getDisciplina().getNome());
+        }
+
+        if (comentario.getMaterial() != null) {
+            dto.setIdMaterial(comentario.getMaterial().getId());
+            dto.setTituloMaterial(comentario.getMaterial().getTitulo());
+        }
+
+        if (comentario.getComentarioPai() != null) {
+            dto.setComentarioPaiId(comentario.getComentarioPai().getId());
+        }
         return dto;
     }
 }

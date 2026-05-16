@@ -19,18 +19,47 @@ public class ComentarioErrorHandling {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorDTO handleComentarioNotFoundException(ComentarioNotFoundException ex,
-                                                 HttpServletRequest request) {
-
+                                                      HttpServletRequest request) {
         log.error("Comentario nao encontrado");
 
-        ErrorDTO errorDTO =  new ErrorDTO();
-        errorDTO.setMensagem("Comentario nao encontrado");
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem(ex.getMessage());
         errorDTO.setData(LocalDateTime.now());
         errorDTO.setCodigoHttp(HttpStatus.NOT_FOUND.value());
-        errorDTO.setCodigoErro("CURSO_NOT_FOUND");
+        errorDTO.setCodigoErro("COMENTARIO_NOT_FOUND");
         errorDTO.setPath(request.getRequestURI());
-        return  errorDTO;
-
+        return errorDTO;
     }
 
+    @ExceptionHandler(ComentarioSemVinculoException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorDTO handleComentarioSemVinculoException(ComentarioSemVinculoException ex,
+                                                        HttpServletRequest request) {
+        log.error("Comentario sem vinculo");
+
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem(ex.getMessage());
+        errorDTO.setData(LocalDateTime.now());
+        errorDTO.setCodigoHttp(HttpStatus.BAD_REQUEST.value());
+        errorDTO.setCodigoErro("COMENTARIO_INVALIDO");
+        errorDTO.setPath(request.getRequestURI());
+        return errorDTO;
+    }
+
+    @ExceptionHandler(ComentarioForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorDTO handleComentarioForbiddenException(ComentarioForbiddenException ex,
+                                                       HttpServletRequest request) {
+        log.error("Comentario sem permissao");
+
+        ErrorDTO errorDTO = new ErrorDTO();
+        errorDTO.setMensagem(ex.getMessage());
+        errorDTO.setData(LocalDateTime.now());
+        errorDTO.setCodigoHttp(HttpStatus.FORBIDDEN.value());
+        errorDTO.setCodigoErro("COMENTARIO_FORBIDDEN");
+        errorDTO.setPath(request.getRequestURI());
+        return errorDTO;
+    }
 }

@@ -1,5 +1,6 @@
 package br.insper.insperMind.usuario.dto;
 
+import br.insper.insperMind.usuario.Role;
 import br.insper.insperMind.usuario.Usuario;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,11 +15,13 @@ public class ResponseUsuarioDTO {
     private String email;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAtualizacao;
+    private Role role;
 
     public static ResponseUsuarioDTO toDTO(Usuario usuario) {
         ResponseUsuarioDTO dto = new ResponseUsuarioDTO();
         dto.setId(usuario.getId());
         dto.setNome(usuario.getNome());
+        dto.setRole(usuario.getRole());
         dto.setEmail(usuario.getEmail());
         dto.setDataCriacao(usuario.getDataCriacao());
         dto.setDataAtualizacao(usuario.getDataAtualizacao());

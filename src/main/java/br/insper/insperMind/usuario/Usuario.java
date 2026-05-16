@@ -26,6 +26,10 @@ public class Usuario {
     @Column(nullable = false)
     private String nome;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.USER;
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -54,6 +58,7 @@ public class Usuario {
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
         usuario.setSenha(dto.getSenha());
+        usuario.setAtivo(true);
         return usuario;
     }
 }

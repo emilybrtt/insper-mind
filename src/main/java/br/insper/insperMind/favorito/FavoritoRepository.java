@@ -10,10 +10,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FavoritoRepository extends JpaRepository<Favorito, Integer> {
-
-    boolean existsByUsuarioAndMaterialAndAtivoTrue(Usuario usuario, Material material);
-
-    boolean existsByUsuarioAndEletivaAndAtivoTrue(Usuario usuario, Eletiva eletiva);
-
+    boolean existsByUsuarioAndMaterial(Usuario usuario, Material material);
+    boolean existsByUsuarioAndEletiva(Usuario usuario, Eletiva eletiva);
     Page<Favorito> findByUsuarioAndAtivoTrue(Usuario usuario, Pageable pageable);
+    Page<Favorito> findByUsuarioAndAtivoTrueAndMaterialIsNotNull(Usuario usuario, Pageable pageable);
+    Page<Favorito> findByUsuarioAndAtivoTrueAndEletivaIsNotNull(Usuario usuario, Pageable pageable);
 }

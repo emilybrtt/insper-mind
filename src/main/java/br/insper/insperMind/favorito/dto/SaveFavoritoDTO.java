@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SaveFavoritoDTO {
-    private String emailUsuario;
-    private Integer itemId;
-    private String tipoItem;
+    private Integer materialId;
+    private Integer eletivaId;
+
 }

@@ -23,7 +23,7 @@ public class SemestreService {
 
     public Semestre get(Integer id) {
         Semestre semestre = semestreRepository.findById(id)
-                .orElseThrow(() -> new SemestreNotFoundException());
+                .orElseThrow(SemestreNotFoundException::new);
 
         if (!semestre.getAtivo()) {
             throw new SemestreNotFoundException();
@@ -44,7 +44,6 @@ public class SemestreService {
         }
 
         Semestre semestre = new Semestre();
-
         semestre.setNome(dto.getNome());
         semestre.setCurso(curso);
         semestre.setAtivo(true);
@@ -59,9 +58,18 @@ public class SemestreService {
                 .map(ResponseSemestreDTO::toDTO);
     }
 
-
     public ResponseSemestreDTO edit(Integer id, EditSemestreDTO dto) {
         Semestre semestre = get(id);
+
+        if (dto.getNome() != null || dto.getCursoId() != null) {
+            String novoNome = dto.getNome() != null ? dto.getNome() : semestre.getNome();
+            Integer novoCursoId = dto.getCursoId() != null ? dto.getCursoId() : semestre.getCurso().getId();
+
+            if ((!novoNome.equals(semestre.getNome()) || !novoCursoId.equals(semestre.getCurso().getId()))
+                    && semestreRepository.existsByNomeAndCursoId(novoNome, novoCursoId)) {
+                throw new SemestreAlreadyExistsException();
+            }
+        }
 
         if (dto.getNome() != null) {
             semestre.setNome(dto.getNome());

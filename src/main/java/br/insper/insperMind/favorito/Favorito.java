@@ -38,4 +38,6 @@ public class Favorito {
 
     @CreationTimestamp
     private LocalDateTime dataSalvo;
+
+
 }

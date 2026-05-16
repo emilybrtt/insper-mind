@@ -7,8 +7,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("/eletivas")
@@ -18,8 +19,10 @@ public class EletivaController {
     private EletivaService eletivaService;
 
     @PostMapping
-    public ResponseEletivaDTO saveEletiva(@Valid @RequestBody SaveEletivaDTO saveEletivaDTO) {
-        return eletivaService.save(saveEletivaDTO);
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEletivaDTO saveEletiva(@Valid @RequestBody SaveEletivaDTO dto) {
+        return eletivaService.save(dto);
     }
 
     @GetMapping
@@ -33,14 +36,29 @@ public class EletivaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEletivaDTO editEletiva(@PathVariable Integer id, @RequestBody EditEletivaDTO editEletivaDTO) {
-        return eletivaService.edit(id, editEletivaDTO);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEletivaDTO editEletiva(@PathVariable Integer id,
+                                          @Valid @RequestBody EditEletivaDTO dto) {
+        return eletivaService.edit(id, dto);
+    }
+
+    @PostMapping("/{id}/docentes/{docenteId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEletivaDTO addDocente(@PathVariable Integer id,
+                                         @PathVariable Integer docenteId) {
+        return eletivaService.addDocente(id, docenteId);
+    }
+
+    @DeleteMapping("/{id}/docentes/{docenteId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEletivaDTO removeDocente(@PathVariable Integer id,
+                                            @PathVariable Integer docenteId) {
+        return eletivaService.removeDocente(id, docenteId);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteEletiva(@PathVariable Integer id) {
         eletivaService.delete(id);
     }
-
-
 }
